@@ -1,0 +1,120 @@
+{
+    "policy_pages": {
+        "builder": true,
+        "no_selection":true,
+        "name": "Policy Pages",
+        "element": {
+            "title": "text",
+            "slug": "text",
+            "details": "textarea-nic",
+            "modal": false
+        }
+    },
+
+    "how_it_work":{
+        "builder":true,
+        "no_selection":true,
+        "name":"How It Work",
+        "content":{
+            "title":"text",
+            "subtitle":"text"
+        },
+        "element":{
+            "images":{
+                "image":{
+                    "size":"50x50"
+                }
+            },
+            "title":"text",
+            "content":"text",
+            "modal":true
+        }
+    },
+
+    "ranking":{
+        "builder":true,
+        "no_selection":true,
+        "name":"Ranking Section",
+        "content":{
+            "heading":"text",
+            "sub_heading":"text"
+        }
+    },
+
+    "faq":{
+        "builder":true,
+        "no_selection":false,
+        "name":"FAQ",
+        "content":{
+            "title":"text"
+        },
+        "element":{
+            "question":"text",
+            "answer":"textarea",
+            "modal":true
+        }
+    },
+
+    "authentication":{
+        "builder":true,
+        "no_selection":true,
+        "name":"Authentication Pages",
+        "content":{
+            "register_title":"text",
+            "register_subtitle":"text",
+            "login_title":"text",
+            "login_subtitle":"text"
+        }
+    },
+
+    "contact":{
+        "builder":true,
+        "no_selection":true,
+        "name":"Contact",
+        "content":{
+            "title":"text",
+            "subtitle":"text"
+        },
+        "element":{
+            "icon":"icon",
+            "title":"text",
+            "content":"text",
+            "modal":true
+        }
+    },
+
+    "footer": {
+        "builder": true,
+        "no_selection":true,
+        "name": "Footer",
+        "content": {
+            "content": "textarea"
+        }
+    },
+    "kyc": {
+        "builder": true,
+        "no_selection": true,
+        "name": "KYC Content",
+        "content": {
+            "required": "text",
+            "pending": "text",
+            "reject": "text"
+        }
+    },
+    "register_disable": {
+        "builder": true,
+        "no_selection": true,
+        "name": "Registration Disable",
+        "content": {
+            "images": {
+                "image": {
+                    "size": "280x280"
+                }
+            },
+            "heading": "text",
+            "subheading": "text",
+            "button_name": "text",
+            "button_url": "text"
+        }
+    }
+}
