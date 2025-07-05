@@ -11,7 +11,7 @@
                     <div class="card h-100 shadow border-0 rounded-4 overflow-hidden">
                         <div class="card-body p-4 d-flex flex-column">
                             <h5 class="text-center fw-bold mb-2">{{ $game->name }}</h5>
-                            <p class="text-center text-muted mb-3">🎟 Ticket Price: <strong>PKR
+                            <p class="text-center text-muted mb-3">Price: <strong>PKR
                                     {{ $game->ticket_price }}</strong></p>
 
                             <div class="d-flex justify-content-center gap-3 mb-3 countdown-timer"
