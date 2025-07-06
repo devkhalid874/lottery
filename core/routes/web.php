@@ -52,3 +52,4 @@ Route::controller('SiteController')->group(function () {
 
 // GameTicket Controller
 Route::post('/buy-ticket', [GameTicketController::class, 'buy'])->name('ticket.buy')->middleware('auth');
+

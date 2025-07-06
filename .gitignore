@@ -1,6 +1,7 @@
 .env
 *.sql
-/database/
+/database/*
+!database/database.sql
 /core/database/
 node_modules/
 vendor/
