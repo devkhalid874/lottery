@@ -192,5 +192,13 @@
         "subtitle": "Insert the robots.txt content here to enhance bot web crawlers and instruct them on how to interact with certain areas of the website.",
         "icon": "las la-robot",
         "route_name": "admin.setting.robot"
+    },
+       "Announcement": {
+        "keyword": ["Announcement", "announce"],
+        "title": "Announcement",
+        "subtitle": "Manage and publish important announcements, including video or image banners.",
+        "icon": "las la-bullhorn",
+        "route_name": "admin.announcement.index"
     }
+
 }

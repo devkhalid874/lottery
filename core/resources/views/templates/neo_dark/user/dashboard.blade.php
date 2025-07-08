@@ -48,7 +48,7 @@
                         </div>
                     @endif
 
-                    @if ($user->deposit_wallet <= 0 && $user->interest_wallet <= 0)
+                    @if ($user->balance <= 0 && $user->balance <= 0)
                         <div class="alert border border--danger" role="alert">
                             <div class="alert__icon d-flex align-items-center text--danger"><i class="fas fa-exclamation-triangle"></i></div>
                             <p class="alert__message">
@@ -129,10 +129,10 @@
                                 <div class="stat-item">
                                     <i class="las la-piggy-bank base--color"></i>
                                     <h6 class="caption text-shadow">@lang('Deposit Wallet')</h6>
-                                    <span class="total__amount">{{ showAmount($user->deposit_wallet) }}</span>
+                                    <span class="total__amount">{{ showAmount($user->balance) }}</span>
 
                                     <div class="d-flex justify-content-center mt-3">
-                                        <a href="{{ route('user.transactions') }}?wallet_type=deposit_wallet" class="btn btn-primary btn-small d-block text-center style--two">@lang('View report')</a>
+                                        <a href="{{ route('user.transactions') }}?wallet_type=balance" class="btn btn-primary btn-small d-block text-center style--two">@lang('View report')</a>
                                     </div>
 
                                 </div>
@@ -142,9 +142,9 @@
                                 <div class="stat-item">
                                     <i class="las la-piggy-bank base--color"></i>
                                     <h6 class="caption text-shadow">@lang('Interest Wallet')</h6>
-                                    <span class="total__amount">{{ showAmount($user->interest_wallet) }}</span>
+                                    <span class="total__amount">{{ showAmount($user->balance) }}</span>
                                     <div class="d-flex justify-content-center mt-3">
-                                        <a href="{{ route('user.transactions') }}?wallet_type=interest_wallet" class="btn btn-primary btn-small d-block text-center style--two">@lang('View report')</a>
+                                        <a href="{{ route('user.transactions') }}?wallet_type=balance" class="btn btn-primary btn-small d-block text-center style--two">@lang('View report')</a>
                                     </div>
                                 </div>
                             </div>

@@ -18,7 +18,7 @@ use Illuminate\Support\Str;
 // use Laramin\Utility\VugiChugi;
 
 function systemDetails() {
-    $system['name']          = 'hyiplab';
+    $system['name']          = 'Akra Lottery';
     $system['version']       = '5.3';
     $system['build_version'] = '5.1.3';
     $system['h_verifier']    = str_rot13('ivfre_ulvcyno');
@@ -391,6 +391,19 @@ function getRealIP() {
 
     return $ip;
 }
+
+if (!function_exists('getTicketId')) {
+    function getTicketId($id)
+    {
+        return 'akraa' . str_pad($id, 3, '0', STR_PAD_LEFT); // e.g., akraa001
+    }
+}
+
+function announcementAsset($filename) {
+    return asset('assets/images/announcement/' . $filename);
+}
+
+
 
 function appendQuery($key, $value) {
     return request()->fullUrlWithQuery([$key => $value]);

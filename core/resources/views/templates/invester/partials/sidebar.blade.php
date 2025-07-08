@@ -7,10 +7,9 @@
     <div class="bg--lights">
         <div class="profile-info">
             <p class="fs--13px mb-3 fw-bold">@lang('ACCOUNT BALANCE')</p>
-            <h4 class="usd-balance text--base mb-2 fs--30">{{ showAmount(auth()->user()->deposit_wallet, currencyFormat:false) }} <sub class="top-0 fs--13px">{{ gs('cur_text') }} <small>(@lang('Deposit Wallet'))</small> </sub></h4>
-            <p class="btc-balance fw-medium fs--18px">{{ showAmount(auth()->user()->interest_wallet, currencyFormat:false) }} <sub class="top-0 fs--13px">{{ gs('cur_text') }} <small>(@lang('Interest Wallet'))</small></sub></p>
+            <p class="btc-balance fw-medium fs--18px">{{ showAmount(auth()->user()->balance, currencyFormat:false) }} <sub class="top-0 fs--13px">{{ gs('cur_text') }} <small>(@lang('Wallet Balance'))</small></sub></p>
             <div class="mt-4 d-flex flex-wrap gap-2">
-                  <a href="{{ route('user.deposit.index') }}" class="btn btn--base btn--smd">@lang('Balance')</a>
+                  <a href="{{ route('user.deposit.index') }}" class="btn btn--base btn--smd">@lang('Deposit Now')</a>
                 {{-- <a href="{{ route('user.deposit.index') }}" class="btn btn--base btn--smd">@lang('Deposit')</a>
                 <a href="{{ route('user.withdraw') }}" class="btn btn--secondary btn--smd">@lang('Withdraw')</a> --}}
             </div>
@@ -20,7 +19,7 @@
         <li><a href="{{ route('user.home') }}" class="{{ menuActive('user.home') }}"><img src="{{ asset($activeTemplateTrue . '/images/icon/dashboard.png') }}" alt="icon"> @lang('Dashboard')</a></li>
          <li><a href="{{ route('tickets.history')}}" class=""><img src="{{ asset($activeTemplateTrue . '/images/icon/dashboard.png') }}" alt="icon"> @lang('GameTickets')</a></li>
         {{-- <li><a href="{{ route('user.invest.statistics') }}" class="{{ menuActive(['user.invest.statistics', 'user.invest.log', 'plan', 'user.invest.details']) }}"><img src="{{ asset($activeTemplateTrue . '/images/icon/investment.png') }}" alt="icon"> @lang('Investments')</a></li> --}}
-        <li><a href="{{ route('user.invest.statistics') }}" class="{{ menuActive(['user.invest.statistics', 'user.invest.log', 'plan', 'user.invest.details']) }}"><img src="{{ asset($activeTemplateTrue . '/images/icon/investment.png') }}" alt="icon"> @lang('Tickets')</a></li>
+        {{-- <li><a href="{{ route('user.invest.statistics') }}" class="{{ menuActive(['user.invest.statistics', 'user.invest.log', 'plan', 'user.invest.details']) }}"><img src="{{ asset($activeTemplateTrue . '/images/icon/investment.png') }}" alt="icon"> @lang('Tickets')</a></li> --}}
         @if (gs('schedule_invest'))
             <li><a href="{{ route('user.invest.schedule') }}" class="{{ menuActive('user.invest.schedule') }}"><img src="{{ asset($activeTemplateTrue . '/images/icon/schedule.png') }}" alt="icon"> @lang('Schedule Investment')</a></li>
         @endif

@@ -41,7 +41,7 @@ class InvestController extends Controller
         $wallet = $request->wallet_type;
 
         //Direct checkout
-        if ($wallet != 'deposit_wallet' && $wallet != 'interest_wallet') {
+        if ($wallet != 'balance' && $wallet != 'balance') {
 
             $gate = GatewayCurrency::whereHas('method', function ($gate) {
                 $gate->where('status', Status::ENABLE);
@@ -90,7 +90,7 @@ class InvestController extends Controller
         }
 
         if ($request->invest_time == 'schedule') {
-            $validationRule['wallet_type']    = 'required|in:deposit_wallet,interest_wallet';
+            $validationRule['wallet_type']    = 'required|in:balance,balance';
             $validationRule['schedule_times'] = 'required|integer|min:1';
             $validationRule['hours']          = 'required|integer|min:1';
         }
@@ -177,7 +177,7 @@ class InvestController extends Controller
 
         HyipLab::capitalReturn($invest);
         $hyip = new HyipLab($user, $plan);
-        $hyip->invest($invest->amount, 'interest_wallet', $invest->compound_times);
+        $hyip->invest($invest->amount, 'balance', $invest->compound_times);
 
         $notify[] = ['success', 'Reinvested to plan successfully'];
         return back()->withNotify($notify);
@@ -246,7 +246,7 @@ class InvestController extends Controller
         $request->validate([
             'duration' => 'required|integer|min:1',
             'amount'   => "required|numeric|between:$min,$max",
-            'wallet'   => 'required|in:deposit_wallet,interest_wallet',
+            'wallet'   => 'required|in:balance,balance',
             
         ]);
 
@@ -317,7 +317,7 @@ class InvestController extends Controller
         }
         $request->validate([
             'pool_id'     => 'required|integer',
-            'wallet_type' => 'required|in:deposit_wallet,interest_wallet',
+            'wallet_type' => 'required|in:balance,balance',
             'amount'      => 'required|numeric|gt:0',
         ]);
 

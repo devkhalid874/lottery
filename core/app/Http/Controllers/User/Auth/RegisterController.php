@@ -179,17 +179,17 @@ class RegisterController extends Controller
     {
         if(gs('signup_bonus_control') == Status::YES){
             $userWallet = $user;
-            $userWallet->deposit_wallet += gs('signup_bonus_amount');
+            $userWallet->balance += gs('signup_bonus_amount');
             $userWallet->save();
 
             $transaction               = new Transaction();
             $transaction->user_id      = $user->id;
             $transaction->amount       = gs('signup_bonus_amount');
             $transaction->charge       = 0;
-            $transaction->post_balance = $userWallet->deposit_wallet;
+            $transaction->post_balance = $userWallet->balance;
             $transaction->trx_type     = '+';
             $transaction->trx          =  getTrx();
-            $transaction->wallet_type  = 'deposit_wallet';
+            $transaction->wallet_type  = 'balance';
             $transaction->remark       = 'registration_bonus';
             $transaction->details      = 'You have got registration bonus';
             $transaction->save();

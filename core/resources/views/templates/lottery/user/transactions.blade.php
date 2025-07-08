@@ -24,8 +24,8 @@
                         <label>@lang('Wallet')</label>
                         <select name="wallet_type" onChange="window.location.href=this.value">
                             <option value={{ queryBuild('wallet', '') }}>@lang('All')</option>
-                            <option value="{{ queryBuild('wallet_type', 'deposit_wallet') }}" @selected(request()->wallet_type == 'deposit_wallet')>@lang('Deposit Wallet')</option>
-                            <option value="{{ queryBuild('wallet_type', 'interest_wallet') }}" @selected(request()->wallet_type == 'interest_wallet')>@lang('Interest Wallet')</option>
+                            <option value="{{ queryBuild('wallet_type', 'balance') }}" @selected(request()->wallet_type == 'balance')>@lang('Deposit Wallet')</option>
+                            <option value="{{ queryBuild('wallet_type', 'balance') }}" @selected(request()->wallet_type == 'balance')>@lang('Interest Wallet')</option>
                         </select>
                     </div>
                 </div>

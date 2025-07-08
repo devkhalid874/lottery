@@ -16,8 +16,8 @@
                                 <label>@lang('Wallet')</label>
                                 <select class="form-control form--control form-select select2" data-minimum-results-for-search="-1" name="wallet">
                                     <option value="">@lang('Select a wallet')</option>
-                                    <option value="deposit_wallet">@lang('Deposit Wallet') - {{ showAmount($user->deposit_wallet) }}</option>
-                                    <option value="interest_wallet">@lang('Interest Wallet') - {{ showAmount($user->interest_wallet) }}</option>
+                                    <option value="balance">@lang('Deposit Wallet') - {{ showAmount($user->balance) }}</option>
+                                    <option value="balance">@lang('Interest Wallet') - {{ showAmount($user->balance) }}</option>
                                 </select>
                             </div>
                             <div class="form-group">

@@ -58,11 +58,11 @@
                             <label>@lang('Pay Via')</label>
                             <select class="form--control" name="wallet_type" required>
                                 <option value="">@lang('Select One')</option>
-                                @if (auth()->user()->deposit_wallet > 0)
-                                    <option value="deposit_wallet">@lang('Deposit Wallet - ' . showAmount(auth()->user()->deposit_wallet))</option>
+                                @if (auth()->user()->balance > 0)
+                                    <option value="balance">@lang('Deposit Wallet - ' . showAmount(auth()->user()->balance))</option>
                                 @endif
-                                @if (auth()->user()->interest_wallet > 0)
-                                    <option value="interest_wallet">@lang('Interest Wallet -' . showAmount(auth()->user()->interest_wallet))</option>
+                                @if (auth()->user()->balance > 0)
+                                    <option value="balance">@lang('Interest Wallet -' . showAmount(auth()->user()->balance))</option>
                                 @endif
                             </select>
                         </div>

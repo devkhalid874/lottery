@@ -8,6 +8,11 @@ use Illuminate\Database\Eloquent\Model;
 class Game extends Model
 {
     use GlobalStatus;
+
+    protected $casts = [
+    'winning_numbers' => 'array',
+];
+
     
     public function invests()
     {

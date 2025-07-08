@@ -221,7 +221,7 @@ class UserController extends Controller {
 
     public function balanceTransfer(Request $request) {
         $validator = Validator::make($request->all(), [
-            'wallet'   => 'required|in:deposit_wallet,interest_wallet',
+            'wallet'   => 'required|in:balance,balance',
             'username' => 'required',
             'amount'   => 'required|numeric|gt:0',
         ]);
@@ -298,7 +298,7 @@ class UserController extends Controller {
         $transaction->post_balance = getAmount($user->$wallet);
         $transaction->save();
 
-        $receiver->deposit_wallet += $request->amount;
+        $receiver->balance += $request->amount;
         $receiver->save();
 
         $trx2                 = getTrx();
@@ -309,10 +309,10 @@ class UserController extends Controller {
 
         $transaction->trx_type     = '+';
         $transaction->trx          = $trx2;
-        $transaction->wallet_type  = 'deposit_wallet';
+        $transaction->wallet_type  = 'balance';
         $transaction->remark       = 'balance_received';
         $transaction->details      = 'Balance received from ' . $user->username;
-        $transaction->post_balance = getAmount($user->deposit_wallet);
+        $transaction->post_balance = getAmount($user->balance);
         $transaction->save();
 
         notify($user, 'BALANCE_TRANSFER', [
@@ -328,7 +328,7 @@ class UserController extends Controller {
         notify($receiver, 'BALANCE_RECEIVE', [
             'wallet_type'  => 'Deposit wallet',
             'amount'       => showAmount($request->amount),
-            'post_balance' => showAmount($receiver->deposit_wallet),
+            'post_balance' => showAmount($receiver->balance),
             'sender'       => $user->username,
             'trx'          => $trx2,
         ]);

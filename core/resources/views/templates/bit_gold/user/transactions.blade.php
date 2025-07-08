@@ -19,8 +19,8 @@
                                         <label>@lang('Wallet Type')</label>
                                         <select name="wallet_type" class="form-control form-select">
                                             <option value="">@lang('All')</option>
-                                            <option value="deposit_wallet" @selected(request()->wallet_type == 'deposit_wallet')>@lang('Deposit Wallet')</option>
-                                            <option value="interest_wallet" @selected(request()->wallet_type == 'interest_wallet')>@lang('Interest Wallet')</option>
+                                            <option value="balance" @selected(request()->wallet_type == 'balance')>@lang('Deposit Wallet')</option>
+                                            <option value="balance" @selected(request()->wallet_type == 'balance')>@lang('Interest Wallet')</option>
                                         </select>
                                     </div>
                                     <div class="flex-grow-1">
@@ -83,7 +83,7 @@
                                                 </td>
 
                                                 <td>
-                                                    @if ($trx->wallet_type == 'deposit_wallet')
+                                                    @if ($trx->wallet_type == 'balance')
                                                         <span class="badge bg--info">@lang('Deposit Wallet')</span>
                                                     @else
                                                         <span class="badge bg--primary">@lang('Interest Wallet')</span>

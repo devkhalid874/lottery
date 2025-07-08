@@ -47,7 +47,7 @@
 
             <div class="row justify-content-center">
                 <div class="col-md-12">
-                    @if ($user->deposit_wallet <= 0 && $user->interest_wallet <= 0)
+                    @if ($user->balance <= 0 && $user->balance <= 0)
                         <div class="alert border border--danger" role="alert">
                             <div class="alert__icon d-flex align-items-center text--danger"><i class="fas fa-exclamation-triangle"></i></div>
                             <p class="alert__message">
@@ -124,7 +124,7 @@
                             <div class="d-widget d-flex justify-content-between gap-5">
                                 <div class="left-content">
                                     <span class="caption">@lang('Deposit Wallet Balance')</span>
-                                    <h4 class="currency-amount">{{ showAmount($user->deposit_wallet) }}</h4>
+                                    <h4 class="currency-amount">{{ showAmount($user->balance) }}</h4>
                                 </div>
                                 <div class="icon ms-auto">
                                     <i class="las la-dollar-sign"></i>
@@ -136,7 +136,7 @@
                                 <div class="left-content">
                                     <span class="caption">@lang('Interest Wallet Balance')</span>
                                     <h4 class="currency-amount">
-                                        {{ showAmount($user->interest_wallet) }}</h4>
+                                        {{ showAmount($user->balance) }}</h4>
                                 </div>
                                 <div class="icon ms-auto">
                                     <i class="las la-wallet"></i>
@@ -228,7 +228,7 @@
                                                     @endif
                                                 </td>
                                                 <td>
-                                                    @if ($trx->wallet_type == 'deposit_wallet')
+                                                    @if ($trx->wallet_type == 'balance')
                                                         <span class="badge bg-info">@lang('Deposit Wallet')</span>
                                                     @else
                                                         <span class="badge bg-primary">@lang('Interest Wallet')</span>

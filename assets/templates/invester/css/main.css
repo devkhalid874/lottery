@@ -93,7 +93,7 @@ body {
 }
 footer {
     margin-top: auto;
-    background-color: #0d6efd ;
+    background-color: #1e3a8a ;
 }
 
 p {
@@ -1786,6 +1786,15 @@ input:-webkit-autofill:focus {
     margin: 0;
 }
 
+.footer-text {
+    color: white;
+    font-family: AcuminProCond-Bold, sans-serif;
+}
+
+.copy-right-text{
+    color: white;
+}
+
 .custom--card .card-body {
     padding: 25px;
 }
@@ -2230,7 +2239,7 @@ input:-webkit-autofill:focus {
 }
 
 .dashboard-sidebar .profile-info {
-    margin: 30px 0px;
+    /* margin: 30px 0px; */
     padding: 20px;
 }
 
@@ -4134,4 +4143,56 @@ select.langSel option {
     .pool-item .remaining .title {
         font-size: 14px;
     }
+}
+
+/* New Css Added */
+.number-box {
+    background-color: #fff;
+    border: 1px solid #007bff;
+    border-radius: 6px;
+    padding: 10px 10px;
+    font-weight: 600;
+    cursor: pointer;
+    transition: 0.2s ease-in-out;
+    user-select: none;
+}
+
+.number-box:hover {
+    background-color: #e3f2fd;
+}
+
+.number-box.selected {
+    background-color: #007bff;
+    color: white;
+    border-color: #0056b3;
+}
+
+.countdown-circle {
+    background-color: #f1f1f1;
+    padding: 10px 14px;
+    border-radius: 10px;
+    min-width: 48px;
+}
+
+.card:hover {
+    border-color: #0d6efd;
+    transition: border-color 0.3s ease;
+}
+
+/* Button */
+.btn-primary {
+    background-color: #007bff;
+    border: none;
+    border-radius: 20px;
+    transition: all 0.3s ease;
+}
+
+.btn-primary:hover {
+    background-color: #0056b3;
+    transform: translateY(-1px);
+}
+
+.btn-primary:active {
+    background-color: #004494;
+    transform: scale(0.98);
 }

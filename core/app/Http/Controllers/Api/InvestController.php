@@ -190,7 +190,7 @@ class InvestController extends Controller
             ]);
         }
 
-        if ($wallet != 'deposit_wallet' && $wallet != 'interest_wallet') {
+        if ($wallet != 'balance' && $wallet != 'balance') {
             $gate = GatewayCurrency::whereHas('method', function ($gate) {
                 $gate->where('status', Status::ENABLE);
             })->find($wallet);
@@ -283,7 +283,7 @@ class InvestController extends Controller
         }
 
         if ($request->invest_time == 'schedule') {
-            $validationRule['wallet']         = 'required|in:deposit_wallet,interest_wallet';
+            $validationRule['wallet']         = 'required|in:balance,balance';
             $validationRule['schedule_times'] = 'required|integer|min:1';
             $validationRule['hours']          = 'required|integer|min:1';
         }
@@ -363,7 +363,7 @@ class InvestController extends Controller
 
         HyipLab::capitalReturn($invest);
         $hyip = new HyipLab($user, $plan);
-        $hyip->invest($invest->amount, 'interest_wallet', $invest->compound_times);
+        $hyip->invest($invest->amount, 'balance', $invest->compound_times);
 
         $notify[] = 'Reinvested to plan successfully';
         return response()->json([
@@ -553,7 +553,7 @@ class InvestController extends Controller
         $validator = Validator::make($request->all(), [
             'duration' => 'required|integer|min:1',
             'amount'   => "required|numeric|between:$min,$max",
-            'wallet'   => 'required|in:deposit_wallet,interest_wallet',
+            'wallet'   => 'required|in:balance,balance',
         ]);
 
         if ($validator->fails()) {
@@ -690,7 +690,7 @@ class InvestController extends Controller
 
         $validator = Validator::make($request->all(), [
             'pool_id' => 'required|integer',
-            'wallet'  => 'required|in:deposit_wallet,interest_wallet',
+            'wallet'  => 'required|in:balance,balance',
             'amount'  => 'required|numeric|gt:0',
         ]);
 

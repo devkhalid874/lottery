@@ -45,7 +45,7 @@
             </div>
         @endif
 
-        @if ($user->deposit_wallet <= 0 && $user->interest_wallet <= 0)
+        @if ($user->balance <= 0 && $user->balance <= 0)
             <div class="alert border border--danger" role="alert">
                 <div class="alert__icon d-flex align-items-center text--danger"><i class="fas fa-exclamation-triangle"></i></div>
                 <p class="alert__message">

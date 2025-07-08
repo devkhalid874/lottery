@@ -196,7 +196,7 @@ class ManageUsersController extends Controller {
         $request->validate([
             'amount'      => 'required|numeric|gt:0',
             'act'         => 'required|in:add,sub',
-            'wallet_type' => 'required|in:deposit_wallet,interest_wallet',
+            'wallet_type' => 'required|in:balance,balance',
             'remark'      => 'required|string|max:255',
         ]);
 

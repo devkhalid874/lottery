@@ -1,6 +1,7 @@
 <?php
 
 use Illuminate\Support\Facades\Route;
+use App\Http\Controllers\Admin\AnnouncementController;
 
 
 Route::namespace('Auth')->group(function () {
@@ -425,5 +426,14 @@ Route::middleware('admin')->group(function () {
         });
 
     });
+
+    // Announcement
+     Route::resource('announcement', AnnouncementController::class)->names('announcement');
+
+     Route::post('announcement/delete/{id}', [AnnouncementController::class, 'destroy'])->name('announcement.delete');
+
+     Route::post('announcement/update', [AnnouncementController::class, 'update'])->name('announcement.update');
+
+
 });
 

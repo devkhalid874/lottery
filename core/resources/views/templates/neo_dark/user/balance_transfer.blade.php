@@ -12,8 +12,8 @@
                                 <label>@lang('Wallet')</label>
                                 <select class="form-control form-select" name="wallet">
                                     <option value="">@lang('Select a wallet')</option>
-                                    <option value="deposit_wallet">@lang('Deposit Wallet') - {{ showAmount($user->deposit_wallet) }} {{ gs('cur_text') }}</option>
-                                    <option value="interest_wallet">@lang('Interest Wallet') - {{ showAmount($user->interest_wallet) }} {{ gs('cur_text') }}</option>
+                                    <option value="balance">@lang('Deposit Wallet') - {{ showAmount($user->balance) }} {{ gs('cur_text') }}</option>
+                                    <option value="balance">@lang('Interest Wallet') - {{ showAmount($user->balance) }} {{ gs('cur_text') }}</option>
                                 </select>
                             </div>
                             <div class="form-group">

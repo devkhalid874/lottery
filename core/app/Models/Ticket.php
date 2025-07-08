@@ -28,4 +28,10 @@ class Ticket extends Model
     return $this->hasMany(Ticket::class);
 }
 
+public function getFormattedTicketIdAttribute()
+{
+    return getTicketId($this->id);
+}
+
+
 }

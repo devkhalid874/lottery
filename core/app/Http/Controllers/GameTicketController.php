@@ -9,6 +9,7 @@ use Illuminate\Support\Str;
 
 class GameTicketController extends Controller
 {
+
     public function buy(Request $request)
     {
         $request->validate([
@@ -19,36 +20,50 @@ class GameTicketController extends Controller
         $user = auth()->user();
         $game = Game::findOrFail($request->game_id);
         $ticketPrice = $game->ticket_price;
-
         $numbers = $request->numbers;
 
-        if (!is_array($numbers) || count($numbers) === 0) {
+        if (count($numbers) === 0) {
             return response()->json(['success' => false, 'message' => 'No numbers selected']);
+        }
+
+        // ✅ Check if current time is within open and close time
+        $now = now()->format('H:i:s'); // current server time in 24-hour format
+
+        if ($now < $game->open_time || $now > $game->close_time) {
+            return response()->json([
+                'success' => false,
+                'message' => "This game is only open between " . date('g:i A', strtotime($game->open_time)) . " and " . date('g:i A', strtotime($game->close_time)) . ". Please try during that time."
+            ]);
         }
 
         $totalCost = $ticketPrice * count($numbers);
 
-        if ($user->deposit_wallet < $totalCost) {
+        if ($user->balance < $totalCost) {
             return response()->json(['success' => false, 'message' => 'Insufficient balance']);
         }
 
-        $user->deposit_wallet -= $totalCost;
+        // Deduct balance once
+        $user->balance -= $totalCost;
         $user->save();
 
-      
-         Ticket::create([
-    'user_id'   => $user->id,
-    'game_id'   => $game->id,
-    'number'    => json_encode($numbers), // ✅ all numbers in one array
-    'ticket_id' => strtoupper(Str::uuid()),
-    'amount'    => $ticketPrice * count($numbers),
-]);
+        // Create one ticket per number
+        foreach ($numbers as $number) {
+            Ticket::create([
+                'user_id'   => $user->id,
+                'game_id'   => $game->id,
+                'number'    => $number,
+                'amount'    => $ticketPrice,
+            ]);
+        }
 
-
-        return response()->json(['success' => true, 'message' => 'Ticket(s) purchased successfully']);
+        return response()->json([
+            'success' => true,
+            'message' => 'Tickets purchased successfully',
+        ]);
     }
 
-      public function history()
+
+    public function history()
     {
         $user = auth()->user();
 
@@ -56,7 +71,7 @@ class GameTicketController extends Controller
             ->where('user_id', $user->id)
             ->latest()
             ->paginate(10);
-            $pageTitle = "Ticket History";
-        return view('Template::user.gametickets', compact('tickets','pageTitle'));
+        $pageTitle = "Ticket History";
+        return view('Template::user.gametickets', compact('tickets', 'pageTitle'));
     }
 }

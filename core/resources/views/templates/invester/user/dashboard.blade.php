@@ -45,7 +45,7 @@
             </div>
         @endif
 
-        @if ($user->deposit_wallet <= 0 && $user->interest_wallet <= 0)
+        @if ($user->balance <= 0 && $user->balance <= 0)
             <div class="alert border border--danger" role="alert">
                 <div class="alert__icon d-flex align-items-center text--danger"><i class="fas fa-exclamation-triangle"></i></div>
                 <p class="alert__message">
@@ -105,86 +105,98 @@
             </div>
         @endif
 
-        <div class="row g-3 mt-4">
-            <div class="col-lg-4">
-                <div class="dashboard-widget">
-                    <div class="d-flex justify-content-between">
-                        <h5 class="text-secondary">@lang('Successful Deposits')</h5>
-                    </div>
-                    <h3 class="text--secondary my-4">{{ showAmount($successfulDeposits) }}</h3>
-                    <div class="widget-lists">
-                        <div class="row">
-                            <div class="col-4">
-                                <p class="fw-bold">@lang('Submitted')</p>
-                                <span>{{ showAmount($submittedDeposits) }}</span>
-                            </div>
-                            <div class="col-4">
-                                <p class="fw-bold">@lang('Pending')</p>
-                                <span>{{ showAmount($pendingDeposits) }}</span>
-                            </div>
-                            <div class="col-4">
-                                <p class="fw-bold">@lang('Rejected')</p>
-                                <span>{{ showAmount($rejectedDeposits) }}</span>
-                            </div>
-                        </div>
-                        <hr>
-                        <p><small><i>@lang('You\'ve requested to deposit') {{ showAmount($requestedDeposits) }}. @lang('Where') {{ showAmount($initiatedDeposits) }} @lang('is just initiated but not submitted.')</i></small></p>
-                    </div>
-                </div>
+  <div class="row g-3 mt-4">
+    {{-- Successful Deposits --}}
+    <div class="col-lg-4">
+        <div class="dashboard-widget">
+            <div class="d-flex justify-content-between">
+                <h5 class="text-secondary">@lang('Successful Deposits')</h5>
             </div>
-            <div class="col-lg-4">
-                <div class="dashboard-widget">
-                    <div class="d-flex justify-content-between">
-                        <h5 class="text-secondary">@lang('Successful Withdrawals')</h5>
+            <h3 class="text--secondary my-4">{{ showAmount($successfulDeposits) }}</h3>
+            <div class="widget-lists">
+                <div class="row">
+                    <div class="col-4">
+                        <p class="fw-bold">@lang('Submitted')</p>
+                        <span>{{ showAmount($submittedDeposits) }}</span>
                     </div>
-                    <h3 class="text--secondary my-4">{{ showAmount($successfulWithdrawals) }}</h3>
-                    <div class="widget-lists">
-                        <div class="row">
-                            <div class="col-4">
-                                <p class="fw-bold">@lang('Submitted')</p>
-                                <span>{{ showAmount($submittedWithdrawals) }}</span>
-                            </div>
-                            <div class="col-4">
-                                <p class="fw-bold">@lang('Pending')</p>
-                                <span>{{ showAmount($pendingWithdrawals) }}</span>
-                            </div>
-                            <div class="col-4">
-                                <p class="fw-bold">@lang('Rejected')</p>
-                                <span>{{ showAmount($rejectedWithdrawals) }}</span>
-                            </div>
-                        </div>
-                        <hr>
-                        <p><small><i>@lang('You\'ve requested to withdraw') {{ showAmount($requestedWithdrawals) }}. @lang('Where') {{ showAmount($initiatedWithdrawals) }} @lang('is just initiated but not submitted.')</i></small></p>
+                    <div class="col-4">
+                        <p class="fw-bold">@lang('Pending')</p>
+                        <span>{{ showAmount($pendingDeposits) }}</span>
+                    </div>
+                    <div class="col-4">
+                        <p class="fw-bold">@lang('Rejected')</p>
+                        <span>{{ showAmount($rejectedDeposits) }}</span>
                     </div>
                 </div>
+                <hr>
+                <p>
+                    <small>
+                        <i>@lang('You\'ve requested to deposit') {{ showAmount($requestedDeposits) }}.
+                        @lang('Where') {{ showAmount($initiatedDeposits) }} @lang('is just initiated but not submitted.')</i>
+                    </small>
+                </p>
             </div>
-            {{-- <div class="col-lg-4">
-                <div class="dashboard-widget">
-                    <div class="d-flex justify-content-between">
-                        <h5 class="text-secondary">@lang('Total Investments')</h5>
-                    </div>
-                    <h3 class="text--secondary my-4">{{ showAmount($invests) }}</h3>
-                    <div class="widget-lists">
-                        <div class="row">
-                            <div class="col-4">
-                                <p class="fw-bold">@lang('Completed')</p>
-                                <span>{{ showAmount($completedInvests) }}</span>
-                            </div>
-                            <div class="col-4">
-                                <p class="fw-bold">@lang('Running')</p>
-                                <span>{{ showAmount($runningInvests) }}</span>
-                            </div>
-                            <div class="col-4">
-                                <p class="fw-bold">@lang('Interests')</p>
-                                <span>{{ showAmount($interests) }}</span>
-                            </div>
-                        </div>
-                        <hr>
-                        <p><small><i>@lang('You\'ve invested') {{ showAmount($depositWalletInvests) }} @lang('from the deposit wallet and') {{ showAmount($interestWalletInvests) }} @lang('from the interest wallet')</i></small></p>
-                    </div>
-                </div>
-            </div> --}}
         </div>
+    </div>
+
+    {{-- Successful Withdrawals --}}
+    <div class="col-lg-4">
+        <div class="dashboard-widget">
+            <div class="d-flex justify-content-between">
+                <h5 class="text-secondary">@lang('Successful Withdrawals')</h5>
+            </div>
+            <h3 class="text--secondary my-4">{{ showAmount($successfulWithdrawals) }}</h3>
+            <div class="widget-lists">
+                <div class="row">
+                    <div class="col-4">
+                        <p class="fw-bold">@lang('Submitted')</p>
+                        <span>{{ showAmount($submittedWithdrawals) }}</span>
+                    </div>
+                    <div class="col-4">
+                        <p class="fw-bold">@lang('Pending')</p>
+                        <span>{{ showAmount($pendingWithdrawals) }}</span>
+                    </div>
+                    <div class="col-4">
+                        <p class="fw-bold">@lang('Rejected')</p>
+                        <span>{{ showAmount($rejectedWithdrawals) }}</span>
+                    </div>
+                </div>
+                <hr>
+                <p>
+                    <small>
+                        <i>@lang('You\'ve requested to withdraw') {{ showAmount($requestedWithdrawals) }}.
+                        @lang('Where') {{ showAmount($initiatedWithdrawals) }} @lang('is just initiated but not submitted.')</i>
+                    </small>
+                </p>
+            </div>
+        </div>
+    </div>
+
+    {{-- ✅ New: Wallet Balance --}}
+    <div class="col-lg-4">
+        <div class="dashboard-widget">
+            <div class="d-flex justify-content-between">
+                <h5 class="text-secondary">@lang('Wallet Balance')</h5>
+            </div>
+            <h3 class="text--secondary my-4">{{ showAmount(auth()->user()->balance) }} {{ $general->cur_text }}</h3>
+            <div class="widget-lists">
+                <div class="row">
+                    <div class="col-12">
+                        <p class="fw-bold">@lang('Total Available')</p>
+                        <span>{{ showAmount(auth()->user()->balance) }} {{ $general->cur_text }}</span>
+                    </div>
+                </div>
+                <hr>
+                <p>
+                    <small>
+                        <i>@lang('This is the amount you can use to buy tickets or withdraw.')</i>
+                    </small>
+                </p>
+            </div>
+        </div>
+    </div>
+</div>
+
 
         {{-- <div class="card mt-4 mb-4">
             <div class="card-body">

@@ -2,82 +2,121 @@
 
 @section('panel')
 
-<h3>{{ $game->name }}</h3>
+    <h3>{{ $game->name }}</h3>
 
-{{-- Winner Form --}}
-@if (!$game->winning_numbers)
-    <div class="card mb-4">
-        <div class="card-body">
-          <form action="{{ route('admin.gametickets.setWinner', $game->id) }}" method="POST">
-
-                @csrf
-                <label>Select Winning Numbers</label>
-                <div class="row">
-                    <div class="col-md-3 mb-2">
-                        <input type="number" name="winning_numbers[]" class="form-control" placeholder="Number 1" required>
+    {{-- Winner Form --}}
+    @if (!$game->winning_numbers)
+        <div class="card mb-4">
+            <div class="card-body">
+                <form action="{{ route('admin.gametickets.setWinner', $game->id) }}" method="POST">
+                    @csrf
+                    <label>Select Winning Numbers</label>
+                    <div class="row">
+                        <div class="col-md-3 mb-2">
+                            <input type="number" name="winning_numbers[]" class="form-control" placeholder="Number 1" required>
+                        </div>
+                        <div class="col-md-3 mb-2">
+                            <input type="number" name="winning_numbers[]" class="form-control" placeholder="Number 2">
+                        </div>
+                        <div class="col-md-3 mb-2">
+                            <input type="number" name="winning_numbers[]" class="form-control" placeholder="Number 3">
+                        </div>
+                        <div class="col-md-3 mb-2">
+                            <button class="btn btn--success w-100">Announce Winner</button>
+                        </div>
                     </div>
-                    <div class="col-md-3 mb-2">
-                        <input type="number" name="winning_numbers[]" class="form-control" placeholder="Number 2">
-                    </div>
-                    <div class="col-md-3 mb-2">
-                        <input type="number" name="winning_numbers[]" class="form-control" placeholder="Number 3">
-                    </div>
-                    <div class="col-md-3 mb-2">
-                        <button class="btn btn--success w-100">Announce Winner</button>
-                    </div>
-                </div>
-            </form>
+                </form>
+            </div>
         </div>
-    </div>
-@else
-    <div class="alert alert-success">
-        Winning Numbers: <strong>{{ implode(', ', json_decode($game->winning_numbers)) }}</strong>
-    </div>
-@endif
+    @else
+        <div class="alert alert-success">
+            @php
+                $winning = is_array($game->winning_numbers)
+                    ? $game->winning_numbers
+                    : json_decode($game->winning_numbers, true);
+            @endphp
+            <strong>Winning Numbers: {{ implode(', ', $winning) }}</strong>
+        </div>
+    @endif
 
-{{-- Ticket Table --}}
-<div class="card">
-    <div class="card-body table-responsive">
-        <table class="table table-bordered">
-            <thead>
-                <tr>
-                    <th>Ticket ID</th>
-                    <th>User</th>
-                    <th>Numbers</th>
-                    <th>Is Winner?</th>
-                    <th>Purchased At</th>
-                </tr>
-            </thead>
-            <tbody>
-                @forelse ($game->tickets as $ticket)
-                    <tr>
-                        <td>{{ $ticket->ticket_id }}</td>
-                        <td>{{ $ticket->user->name }}<br><small>{{ $ticket->user->email }}</small></td>
-                        <td>
-                    @foreach (json_decode($ticket->number) as $num)
-
-                                <span class="badge bg-primary">{{ $num }}</span>
-                            @endforeach
-                        </td>
-                        <td>
-                            @if ($ticket->is_winner)
-                                <span class="badge bg-success">Winner</span>
-                            @else
-                                <span class="badge bg-secondary">—</span>
-                            @endif
-                        </td>
-                        <td>{{ showDateTime($ticket->created_at) }}</td>
-                    </tr>
-                @empty
-                    <tr>
-                        <td colspan="5">No tickets found for this game.</td>
-                    </tr>
-                @endforelse
-            </tbody>
-        </table>
+{{-- Time and Day Filter Form --}}
+<div class="card mb-4">
+    <div class="card-body">
+        <form method="GET" action="{{ route('admin.gametickets.gameticket', $game->id) }}">
+            <div class="row g-3 align-items-end">
+                <div class="col-md-3">
+                    <label for="day" class="form-label">Day</label>
+                    <select id="day" name="day" class="form-control">
+                        <option value="">All</option>
+                        @foreach(['Sunday','Monday','Tuesday','Wednesday','Thursday','Friday','Saturday'] as $day)
+                            <option value="{{ $day }}" {{ request()->day == $day ? 'selected' : '' }}>{{ $day }}</option>
+                        @endforeach
+                    </select>
+                </div>
+                <div class="col-md-3">
+                    <label for="start_time" class="form-label">Start Time</label>
+                    <input type="time" id="start_time" name="start_time" class="form-control"
+                        value="{{ request()->start_time }}">
+                </div>
+                <div class="col-md-3">
+                    <label for="end_time" class="form-label">End Time</label>
+                    <input type="time" id="end_time" name="end_time" class="form-control"
+                        value="{{ request()->end_time }}">
+                </div>
+                <div class="col-md-3">
+                    <button class="btn btn--primary w-100" type="submit">Filter Tickets</button>
+                </div>
+            </div>
+        </form>
     </div>
 </div>
 
+
+    {{-- Ticket Table --}}
+    <div class="card">
+        <div class="card-body table-responsive">
+            <table class="table">
+                <thead>
+                    <tr>
+                        <th>Ticket ID</th>
+                        <th>User</th>
+                        <th>Numbers</th>
+                        <th>Is Winner?</th>
+                        <th>Purchased At</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    @php
+                        $tickets = $filteredTickets ?? $game->tickets;
+                    @endphp
+                    @forelse ($tickets as $ticket)
+                        <tr>
+                            <td>{{ $ticket->formatted_ticket_id }}</td>
+                            <td>
+                                {{ $ticket->user->name }}<br>
+                                <small>{{ $ticket->user->email }}</small>
+                            </td>
+                            <td>
+                                <span class="badge text-dark"><strong>{{ $ticket->number }}</strong></span>
+                            </td>
+                            <td>
+                                @if ($ticket->is_winner)
+                                    <span class="badge bg-success">Winner</span>
+                                @else
+                                    <span class="badge bg-secondary">—</span>
+                                @endif
+                            </td>
+                            <td>{{ showDateTime($ticket->created_at) }}</td>
+                        </tr>
+                    @empty
+                        <tr>
+                            <td colspan="5">No tickets found for this game.</td>
+                        </tr>
+                    @endforelse
+                </tbody>
+            </table>
+        </div>
+    </div>
 @endsection
 
 @push('style')

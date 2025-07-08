@@ -54,7 +54,7 @@ class WithdrawController extends Controller
             return back()->withNotify($notify)->withInput($request->all());
         }
 
-        if ($request->amount > $user->interest_wallet) {
+        if ($request->amount > $user->balance) {
             $notify[] = ['error', 'Insufficient balance for withdrawal'];
             return back()->withNotify($notify)->withInput($request->all());
         }
@@ -116,7 +116,7 @@ class WithdrawController extends Controller
             }
         }
 
-        if ($withdraw->amount > $user->interest_wallet) {
+        if ($withdraw->amount > $user->balance) {
             $notify[] = ['error', 'Your request amount is larger then your current balance.'];
             return back()->withNotify($notify)->withInput($request->all());
         }
@@ -124,13 +124,13 @@ class WithdrawController extends Controller
         $withdraw->status               = Status::PAYMENT_PENDING;
         $withdraw->withdraw_information = $userData;
         $withdraw->save();
-        $user->interest_wallet -= $withdraw->amount;
+        $user->balance -= $withdraw->amount;
         $user->save();
 
         $transaction               = new Transaction();
         $transaction->user_id      = $withdraw->user_id;
         $transaction->amount       = $withdraw->amount;
-        $transaction->post_balance = $user->interest_wallet;
+        $transaction->post_balance = $user->balance;
         $transaction->charge       = $withdraw->charge;
         $transaction->trx_type     = '-';
         $transaction->details      = 'Withdraw request via ' . $withdraw->method->name;
@@ -152,7 +152,7 @@ class WithdrawController extends Controller
             'charge'          => showAmount($withdraw->charge, currencyFormat: false),
             'rate'            => showAmount($withdraw->rate, currencyFormat: false),
             'trx'             => $withdraw->trx,
-            'post_balance'    => showAmount($user->interest_wallet, currencyFormat: false),
+            'post_balance'    => showAmount($user->balance, currencyFormat: false),
         ]);
 
         $notify[] = ['success', 'Withdraw request sent successfully'];

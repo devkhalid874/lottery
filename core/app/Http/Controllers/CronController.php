@@ -102,7 +102,7 @@ class CronController extends Controller
                 $invest->net_interest += $invest->rem_compound_times ? 0 : $invest->interest;
 
                 // Add Return Amount to user's Interest Balance
-                $user->interest_wallet += $invest->interest;
+                $user->balance += $invest->interest;
                 $user->save();
 
                 $trx = getTrx();
@@ -113,11 +113,11 @@ class CronController extends Controller
                 $transaction->invest_id    = $invest->id;
                 $transaction->amount       = $invest->interest;
                 $transaction->charge       = 0;
-                $transaction->post_balance = $user->interest_wallet;
+                $transaction->post_balance = $user->balance;
                 $transaction->trx_type     = '+';
                 $transaction->trx          = $trx;
                 $transaction->remark       = 'interest';
-                $transaction->wallet_type  = 'interest_wallet';
+                $transaction->wallet_type  = 'balance';
                 $transaction->details      = showAmount($invest->interest) . ' interest from ' . @$invest->plan->name;
                 $transaction->save();
 
@@ -143,7 +143,7 @@ class CronController extends Controller
                     $newInterest     = $invest->interest * $newInvestAmount / $invest->amount;
                     $newShouldPay    = $invest->should_pay == -1 ? -1 : ($invest->period - $invest->return_rec_time) * $newInterest;
 
-                    $user->interest_wallet -= $invest->interest;
+                    $user->balance -= $invest->interest;
                     $user->save();
 
                     $invest->amount     = $newInvestAmount;
@@ -155,12 +155,12 @@ class CronController extends Controller
                     $transaction->user_id      = $user->id;
                     $transaction->invest_id    = $invest->id;
                     $transaction->amount       = $interest;
-                    $transaction->post_balance = $user->interest_wallet;
+                    $transaction->post_balance = $user->balance;
                     $transaction->charge       = 0;
                     $transaction->trx_type     = '-';
                     $transaction->details      = 'Invested Compound on ' . $invest->plan->name;
                     $transaction->trx          = $trx;
-                    $transaction->wallet_type  = 'interest_wallet';
+                    $transaction->wallet_type  = 'balance';
                     $transaction->remark       = 'invest_compound';
                     $transaction->save();
                 }
@@ -171,7 +171,7 @@ class CronController extends Controller
                     'trx'          => $invest->trx,
                     'amount'       => showAmount($invest->interest, currencyFormat: false),
                     'plan_name'    => @$invest->plan->name,
-                    'post_balance' => showAmount($user->interest_wallet, currencyFormat: false),
+                    'post_balance' => showAmount($user->balance, currencyFormat: false),
                 ]);
             }
         } catch (\Throwable $th) {
@@ -199,7 +199,7 @@ class CronController extends Controller
                 $rankings = UserRanking::active()->where('id', '>', $user->user_ranking_id)->where('minimum_invest', '<=', $userInvests)->where('min_referral_invest', '<=', $referralInvests)->where('min_referral', '<=', $referralCount)->get();
 
                 foreach ($rankings as $ranking) {
-                    $user->interest_wallet += $ranking->bonus;
+                    $user->balance += $ranking->bonus;
                     $user->user_ranking_id = $ranking->id;
                     $user->save();
 
@@ -207,11 +207,11 @@ class CronController extends Controller
                     $transaction->user_id      = $user->id;
                     $transaction->amount       = $ranking->bonus;
                     $transaction->charge       = 0;
-                    $transaction->post_balance = $user->interest_wallet;
+                    $transaction->post_balance = $user->balance;
                     $transaction->trx_type     = '+';
                     $transaction->trx          = getTrx();
                     $transaction->remark       = 'ranking_bonus';
-                    $transaction->wallet_type  = 'interest_wallet';
+                    $transaction->wallet_type  = 'balance';
                     $transaction->details      = showAmount($ranking->bonus) . ' ranking bonus for ' . @$ranking->name;
                     $transaction->save();
                 }
@@ -276,7 +276,7 @@ class CronController extends Controller
 
             foreach ($stakingInvests as $stakingInvest) {
                 $user = $stakingInvest->user;
-                $user->interest_wallet += $stakingInvest->invest_amount + $stakingInvest->interest;
+                $user->balance += $stakingInvest->invest_amount + $stakingInvest->interest;
                 $user->save();
 
                 $stakingInvest->status = Status::STAKING_COMPLETED;
@@ -285,12 +285,12 @@ class CronController extends Controller
                 $transaction               = new Transaction();
                 $transaction->user_id      = $user->id;
                 $transaction->amount       = $stakingInvest->invest_amount + $stakingInvest->interest;
-                $transaction->post_balance = $user->interest_wallet;
+                $transaction->post_balance = $user->balance;
                 $transaction->charge       = 0;
                 $transaction->trx_type     = '+';
                 $transaction->details      = 'Staking invested return';
                 $transaction->trx          = getTrx();
-                $transaction->wallet_type  = 'interest_wallet';
+                $transaction->wallet_type  = 'balance';
                 $transaction->remark       = 'staking_invest_return';
                 $transaction->save();
             }

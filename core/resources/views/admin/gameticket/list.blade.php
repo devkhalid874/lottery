@@ -6,10 +6,9 @@
         <h5 class="text-white">{{ $pageTitle }}</h5>
     </div>
     <div class="card-body table-responsive">
-        <table class="table table-bordered table-striped">
+        <table class="table">
             <thead>
                 <tr>
-                    <th scope="col">#</th>
                     <th scope="col">Game Name</th>
                     <th scope="col">Start Time</th>
                     <th scope="col">End Time</th>
@@ -20,7 +19,6 @@
             <tbody>
                 @forelse ($games as $game)
                     <tr>
-                        <td>{{ $loop->iteration }}</td>
                         <td>{{ $game->name }}</td>
                         <td>{{ showDateTime($game->start_time) }}</td>
                         <td>{{ showDateTime($game->end_time) }}</td>

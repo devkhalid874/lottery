@@ -235,18 +235,18 @@ class HyipLab
             }
 
             $com = ($amount * $commission->percent) / 100;
-            $refer->interest_wallet += $com;
+            $refer->balance += $com;
             $refer->save();
 
             $transactions[] = [
                 'user_id'      => $refer->id,
                 'amount'       => $com,
-                'post_balance' => $refer->interest_wallet,
+                'post_balance' => $refer->balance,
                 'charge'       => 0,
                 'trx_type'     => '+',
                 'details'      => 'level ' . $i . ' Referral Commission From ' . $user->username,
                 'trx'          => $trx,
-                'wallet_type'  => 'interest_wallet',
+                'wallet_type'  => 'balance',
                 'remark'       => 'referral_commission',
                 'created_at'   => now(),
             ];
@@ -261,7 +261,7 @@ class HyipLab
 
             notify($refer, 'REFERRAL_COMMISSION', [
                 'amount'       => showAmount($com, currencyFormat:false),
-                'post_balance' => showAmount($refer->interest_wallet, currencyFormat:false),
+                'post_balance' => showAmount($refer->balance, currencyFormat:false),
                 'trx'          => $trx,
                 'level'        => ordinal($i),
                 'type'         => $comType,
@@ -284,7 +284,7 @@ class HyipLab
      * @return void
      */
 
-    public static function capitalReturn($invest, $wallet = 'interest_wallet')
+    public static function capitalReturn($invest, $wallet = 'balance')
     {
         $user = $invest->user;
         $user->$wallet += $invest->amount;

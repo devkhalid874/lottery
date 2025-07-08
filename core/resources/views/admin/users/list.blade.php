@@ -44,8 +44,8 @@
 
                                 <td>
                                     <span class="fw-bold">
-                                        @lang('Deposit Wallet') {{ showAmount($user->deposit_wallet) }}<br>
-                                        @lang('Interest Wallet') {{ showAmount($user->interest_wallet) }}
+                                        @lang('Deposit Wallet') {{ showAmount($user->balance) }}<br>
+                                        @lang('Interest Wallet') {{ showAmount($user->balance) }}
                                     </span>
                                 </td>
 

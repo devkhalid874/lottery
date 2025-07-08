@@ -118,13 +118,13 @@ class WithdrawalController extends Controller {
         $withdraw->save();
 
         $user = $withdraw->user;
-        $user->interest_wallet += $withdraw->amount;
+        $user->balance += $withdraw->amount;
         $user->save();
 
         $transaction               = new Transaction();
         $transaction->user_id      = $withdraw->user_id;
         $transaction->amount       = $withdraw->amount;
-        $transaction->post_balance = $user->interest_wallet;
+        $transaction->post_balance = $user->balance;
         $transaction->charge       = 0;
         $transaction->trx_type     = '+';
         $transaction->remark       = 'withdraw_reject';
@@ -140,7 +140,7 @@ class WithdrawalController extends Controller {
             'charge'          => showAmount($withdraw->charge, currencyFormat: false),
             'rate'            => showAmount($withdraw->rate, currencyFormat: false),
             'trx'             => $withdraw->trx,
-            'post_balance'    => showAmount($user->interest_wallet, currencyFormat: false),
+            'post_balance'    => showAmount($user->balance, currencyFormat: false),
             'admin_details'   => $request->details,
         ]);
 

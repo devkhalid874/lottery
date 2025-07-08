@@ -90,8 +90,8 @@ class GameController extends Controller
             'ticket_price'  => 'required|numeric|gt:0',
             'range_start' => 'required|string|regex:/^\d{2}$/',
             'range_end' => 'required|string|regex:/^\d{2}$/|gte:range_start',
-            'open_time'     => 'required|date',
-            'close_time'    => 'required|date|after:open_time',
+            'open_time'     => 'required|date_format:H:i',
+            'close_time'    => 'required|date_format:H:i',
             'auto_close'    => 'nullable|in:1',
             'featured'     => 'nullable|boolean',
         ]);
@@ -179,19 +179,19 @@ class GameController extends Controller
         $user = $invest->user;
         $totalPaid = $invest->paid;
 
-        if ($totalPaid <= $user->interest_wallet) {
-            $user->interest_wallet -= $totalPaid;
-            $this->createTransaction($user->id, $totalPaid, $user->interest_wallet, 'interest_wallet');
-        } elseif ($totalPaid <= $user->interest_wallet + $user->deposit_wallet) {
-            $user->deposit_wallet -= ($totalPaid - $user->interest_wallet);
-            $this->createTransaction($user->id, $totalPaid - $user->interest_wallet, $user->deposit_wallet, 'deposit_wallet');
-            $this->createTransaction($user->id, $user->interest_wallet, 0, 'interest_wallet');
-            $user->interest_wallet = 0;
+        if ($totalPaid <= $user->balance) {
+            $user->balance -= $totalPaid;
+            $this->createTransaction($user->id, $totalPaid, $user->balance, 'balance');
+        } elseif ($totalPaid <= $user->balance + $user->balance) {
+            $user->balance -= ($totalPaid - $user->balance);
+            $this->createTransaction($user->id, $totalPaid - $user->balance, $user->balance, 'balance');
+            $this->createTransaction($user->id, $user->balance, 0, 'balance');
+            $user->balance = 0;
         } else {
-            $user->interest_wallet -= ($totalPaid - $user->deposit_wallet);
-            $this->createTransaction($user->id, $totalPaid - $user->deposit_wallet, $user->interest_wallet, 'interest_wallet');
-            $this->createTransaction($user->id, $user->deposit_wallet, 0, 'deposit_wallet');
-            $user->deposit_wallet = 0;
+            $user->balance -= ($totalPaid - $user->balance);
+            $this->createTransaction($user->id, $totalPaid - $user->balance, $user->balance, 'balance');
+            $this->createTransaction($user->id, $user->balance, 0, 'balance');
+            $user->balance = 0;
         }
     }
 

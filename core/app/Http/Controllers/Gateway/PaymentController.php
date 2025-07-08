@@ -150,7 +150,7 @@ class PaymentController extends Controller
             // ✅ Avoid updating wallet again if already processed
             if (!$deposit->wallet_added) { // Optional: Add this check if you want to prevent double updates
                 $user = User::find($deposit->user_id);
-                $user->deposit_wallet += $deposit->amount;
+                $user->balance += $deposit->amount;
                 $user->save();
 
                 $deposit->status = Status::PAYMENT_SUCCESS;
@@ -162,12 +162,12 @@ class PaymentController extends Controller
                 $transaction               = new Transaction();
                 $transaction->user_id      = $deposit->user_id;
                 $transaction->amount       = $deposit->amount;
-                $transaction->post_balance = $user->deposit_wallet;
+                $transaction->post_balance = $user->balance;
                 $transaction->charge       = $deposit->charge;
                 $transaction->trx_type     = '+';
                 $transaction->details      = 'Deposit Via ' . $methodName;
                 $transaction->trx          = $deposit->trx;
-                $transaction->wallet_type  = 'deposit_wallet';
+                $transaction->wallet_type  = 'balance';
                 $transaction->remark       = 'deposit';
                 $transaction->save();
 
@@ -192,7 +192,7 @@ class PaymentController extends Controller
                         $time->where('status', Status::ENABLE);
                     })->where('status', Status::ENABLE)->findOrFail($deposit->plan_id);
                     $hyip = new HyipLab($user, $plan);
-                    $hyip->invest($deposit->amount, 'deposit_wallet', $deposit->compound_times);
+                    $hyip->invest($deposit->amount, 'balance', $deposit->compound_times);
                 }
 
                 notify($user, $isManual ? 'DEPOSIT_APPROVE' : 'DEPOSIT_COMPLETE', [
@@ -203,7 +203,7 @@ class PaymentController extends Controller
                     'charge'          => showAmount($deposit->charge, currencyFormat: false),
                     'rate'            => showAmount($deposit->rate, currencyFormat: false),
                     'trx'             => $deposit->trx,
-                    'post_balance'    => showAmount($user->deposit_wallet, currencyFormat: false),
+                    'post_balance'    => showAmount($user->balance, currencyFormat: false),
                 ]);
             }
         }

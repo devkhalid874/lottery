@@ -130,7 +130,7 @@ class StakingPoolController extends Controller
             $interest     = $investAmount * $request->amount / 100;
 
             $user = $poolInvest->user;
-            $user->interest_wallet += $investAmount + $interest;
+            $user->balance += $investAmount + $interest;
             $user->save();
 
             $poolInvest->status = Status::POOL_COMPLETED;
@@ -139,12 +139,12 @@ class StakingPoolController extends Controller
             $transaction               = new Transaction();
             $transaction->user_id      = $user->id;
             $transaction->amount       = $investAmount + $interest;
-            $transaction->post_balance = $user->interest_wallet;
+            $transaction->post_balance = $user->balance;
             $transaction->charge       = 0;
             $transaction->trx_type     = '+';
             $transaction->details      = 'Pool invested return';
             $transaction->trx          = getTrx();
-            $transaction->wallet_type  = 'interest_wallet';
+            $transaction->wallet_type  = 'balance';
             $transaction->remark       = 'pool_invest_return';
             $transaction->save();
         }

@@ -11,6 +11,7 @@
     <!-- font  -->
     <link href="https://fonts.googleapis.com/css2?family=Lora:ital,wght@1,400;1,500&family=Maven+Pro:wght@400;500;600&display=swap" rel="stylesheet">
 
+<script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
 
     <link href="{{ asset('assets/global/css/bootstrap.min.css') }}" rel="stylesheet">
 

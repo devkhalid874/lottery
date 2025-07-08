@@ -57,8 +57,8 @@ class UserController extends Controller
         $data['completedInvests']      = Invest::where('user_id', $user->id)->where('status', Status::INVEST_CLOSED)->sum('amount');
         $data['runningInvests']        = Invest::where('user_id', $user->id)->where('status', Status::INVEST_RUNNING)->sum('amount');
         $data['interests']             = Transaction::where('remark', 'interest')->where('user_id', $user->id)->sum('amount');
-        $data['depositWalletInvests']  = Invest::where('user_id', $user->id)->where('wallet_type', 'deposit_wallet')->where('status', Status::INVEST_RUNNING)->sum('amount');
-        $data['interestWalletInvests'] = Invest::where('user_id', $user->id)->where('wallet_type', 'interest_wallet')->where('status', Status::INVEST_RUNNING)->sum('amount');
+        $data['depositWalletInvests']  = Invest::where('user_id', $user->id)->where('wallet_type', 'balance')->where('status', Status::INVEST_RUNNING)->sum('amount');
+        $data['interestWalletInvests'] = Invest::where('user_id', $user->id)->where('wallet_type', 'balance')->where('status', Status::INVEST_RUNNING)->sum('amount');
 
         $data['isHoliday']      = HyipLab::isHoliDay(now()->toDateTimeString(), gs());
         $data['nextWorkingDay'] = now()->toDateString();
@@ -346,7 +346,7 @@ class UserController extends Controller
         $request->validate([
             'username' => 'required',
             'amount'   => 'required|numeric|gt:0',
-            'wallet'   => 'required|in:deposit_wallet,interest_wallet',
+            'wallet'   => 'required|in:balance,balance',
         ]);
 
         $user = auth()->user();
@@ -395,7 +395,7 @@ class UserController extends Controller
         $transaction->post_balance = getAmount($user->$wallet);
         $transaction->save();
 
-        $receiver->deposit_wallet += $request->amount;
+        $receiver->balance += $request->amount;
         $receiver->save();
 
         $trx2                      = getTrx();
@@ -405,10 +405,10 @@ class UserController extends Controller
         $transaction->charge       = 0;
         $transaction->trx_type     = '+';
         $transaction->trx          = $trx2;
-        $transaction->wallet_type  = 'deposit_wallet';
+        $transaction->wallet_type  = 'balance';
         $transaction->remark       = 'balance_received';
         $transaction->details      = 'Balance received from ' . $user->username;
-        $transaction->post_balance = getAmount($receiver->deposit_wallet);
+        $transaction->post_balance = getAmount($receiver->balance);
         $transaction->save();
 
         notify($user, 'BALANCE_TRANSFER', [
@@ -424,7 +424,7 @@ class UserController extends Controller
         notify($receiver, 'BALANCE_RECEIVE', [
             'wallet_type'  => 'Deposit wallet',
             'amount'       => showAmount($request->amount, currencyFormat: false),
-            'post_balance' => showAmount($receiver->deposit_wallet, currencyFormat: false),
+            'post_balance' => showAmount($receiver->balance, currencyFormat: false),
             'sender'       => $user->username,
             'trx'          => $trx2,
         ]);

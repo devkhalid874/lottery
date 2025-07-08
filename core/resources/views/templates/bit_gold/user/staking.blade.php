@@ -116,8 +116,8 @@
                             <label>@lang('Wallet')</label>
                             <select name="wallet" class="form-control" required>
                                 <option hidden>@lang('Select One')</option>
-                                <option value="deposit_wallet">@lang('Deposit Wallet - '){{ showAmount(auth()->user()->deposit_wallet) }}</option>
-                                <option value="interest_wallet">@lang('Interest Wallet - '){{ showAmount(auth()->user()->interest_wallet) }}</option>
+                                <option value="balance">@lang('Deposit Wallet - '){{ showAmount(auth()->user()->balance) }}</option>
+                                <option value="balance">@lang('Interest Wallet - '){{ showAmount(auth()->user()->balance) }}</option>
                             </select>
                         </div>
                         <div class="form-group">

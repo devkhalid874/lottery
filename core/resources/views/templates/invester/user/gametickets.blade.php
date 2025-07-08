@@ -1,14 +1,18 @@
 @extends($activeTemplate . 'layouts.master')
 
 @section('content')
-    <div class="container py-5">
-        <div class="section-header text-center mb-4">
-            <h3 class="section-title">@lang('Tickets')</h3>
+    <div class="dashboard-inner">
+        <div class="mb-4">
+            <p>@lang('My Tickets')</p>
+            <h3>@lang('Purchased Ticket History')</h3>
         </div>
-
+        <hr>
+        {{-- Filter/Search (optional) --}}
+        {{-- Add your filters/search here if needed --}}
+        {{-- Ticket Table --}}
         <div class="table-responsive">
             <table class="table table--responsive--xl text-center">
-                <thead>
+                <thead class="thead-dark">
                     <tr>
                         <th>@lang('Ticket ID')</th>
                         <th>@lang('Game')</th>
@@ -20,30 +24,24 @@
                 <tbody>
                     @forelse ($tickets as $ticket)
                         <tr>
-                            <td data-label="@lang('Ticket ID')">{{ $ticket->ticket_id }}</td>
+                            {{-- <td data-label="@lang('Ticket ID')">{{ $ticket->ticket_id }}</td> --}}
+                            <td data-label="@lang('Ticket ID')">
+                                <span class="fw-bold text--dark">{{ $ticket->formatted_ticket_id }}</span>
+                            </td>
                             <td data-label="@lang('Game')">{{ $ticket->game->name ?? 'N/A' }}</td>
                             <td data-label="@lang('Numbers')">
-                                @php
-                                    $numbers = json_decode($ticket->number, true);
-                                @endphp
-
-                                @if (is_array($numbers))
-                                    @foreach ($numbers as $n)
-                                        <span class="badge bg-success  me-1">{{ str_pad($n, 2, '0', STR_PAD_LEFT) }}</span>
-                                    @endforeach
-                                @else
-                                    <span class="badge bg-secondary">N/A</span>
-                                @endif
+                                <span class="badge text-dark px-2 py-1">{{ $ticket->number }}</span>
                             </td>
-
-
-                            <td data-label="@lang('Amount')">{{ showAmount($ticket->amount) }} {{ $general->cur_text }}
+                            <td data-label="@lang('Amount')">
+                                {{ showAmount($ticket->amount) }}
                             </td>
-                            <td data-label="@lang('Purchased At')">{{ showDateTime($ticket->created_at) }}</td>
+                            <td data-label="@lang('Purchased At')">
+                                {{ showDateTime($ticket->created_at) }}
+                            </td>
                         </tr>
                     @empty
                         <tr>
-                            <td colspan="5">@lang('No ticket found')</td>
+                            <td colspan="5" class="text-muted text-center">@lang('No ticket found')</td>
                         </tr>
                     @endforelse
                 </tbody>
@@ -51,8 +49,10 @@
         </div>
 
         {{-- Pagination --}}
-        <div class="d-flex justify-content-center mt-4">
-            {{ $tickets->links() }}
-        </div>
+        @if ($tickets->hasPages())
+            <div class="custom--pagination mt-4">
+                {{ $tickets->links() }}
+            </div>
+        @endif
     </div>
 @endsection

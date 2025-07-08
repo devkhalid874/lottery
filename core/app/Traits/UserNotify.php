@@ -124,7 +124,7 @@ trait UserNotify
     public function scopeEmptyBalanceUsers($query)
     {
         return $query->where(function ($q) {
-            $q->where('deposit_wallet', '<=', 0)->where('interest_wallet', '<=', 0);
+            $q->where('balance', '<=', 0)->where('balance', '<=', 0);
         });
     }
 

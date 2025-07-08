@@ -87,11 +87,11 @@
                                     <label>@lang('Pay Via')</label>
                                     <select class="form-control form-select" name="wallet_type" required>
                                         <option value="">@lang('Select One')</option>
-                                        @if (auth()->user()->deposit_wallet > 0)
-                                            <option value="deposit_wallet">@lang('Deposit Wallet - '. showAmount(auth()->user()->deposit_wallet))</option>
+                                        @if (auth()->user()->balance > 0)
+                                            <option value="balance">@lang('Deposit Wallet - '. showAmount(auth()->user()->balance))</option>
                                         @endif
-                                        @if (auth()->user()->interest_wallet > 0)
-                                            <option value="interest_wallet">@lang('Interest Wallet -'. showAmount(auth()->user()->interest_wallet))</option>
+                                        @if (auth()->user()->balance > 0)
+                                            <option value="balance">@lang('Interest Wallet -'. showAmount(auth()->user()->balance))</option>
                                         @endif
                                         @foreach ($gatewayCurrency as $data)
                                             <option value="{{ $data->id }}" @selected(old('wallet_type') == $data->method_code) data-gateway="{{ $data }}">{{ $data->name }}</option>
@@ -234,7 +234,7 @@
 
             $('[name=wallet_type]').change(function() {
                 var amount = $('[name=amount]').val();
-                if ($(this).val() && $(this).val() != 'deposit_wallet' && $(this).val() != 'interest_wallet' && amount) {
+                if ($(this).val() && $(this).val() != 'balance' && $(this).val() != 'balance' && amount) {
                     var resource = $('select[name=wallet_type] option:selected').data('gateway');
                     var fixed_charge = parseFloat(resource.fixed_charge);
                     var percent_charge = parseFloat(resource.percent_charge);

@@ -71,23 +71,23 @@
                                             <div class="investments-scheme-content">
                                                 <p class="font-12">@lang('Deposit Wallet')</p>
                                                 <h3 class="deposit-amount text--success counter">
-                                                    {{ showAmount($widget['invest_deposit_wallet']) }}
+                                                    {{ showAmount($widget['invest_balance']) }}
                                                 </h3>
                                                 <p class="mb-0 font-12">
                                                     <i class="feather icon-users"></i>
                                                     <strong>
-                                                        {{ showAmount(($widget['invest_deposit_wallet'] / $widget['total_invest']) * 100, currencyFormat: false) }}%
+                                                        {{ showAmount(($widget['invest_balance'] / $widget['total_invest']) * 100, currencyFormat: false) }}%
                                                     </strong>
                                                 </p>
                                             </div>
                                             <div class="investments-scheme-content">
                                                 <p class="font-12">@lang('Interest Wallet')</p>
                                                 <h3 class="deposit-amount text--success counter">
-                                                    {{ showAmount($widget['invest_interest_wallet']) }}
+                                                    {{ showAmount($widget['invest_balance']) }}
                                                 </h3>
                                                 <p class="mb-0 font-12"><i class="feather icon-users"></i>
                                                     <strong>
-                                                        {{ showAmount(($widget['invest_interest_wallet'] / $widget['total_invest']) * 100, currencyFormat: false) }}%
+                                                        {{ showAmount(($widget['invest_balance'] / $widget['total_invest']) * 100, currencyFormat: false) }}%
                                                     </strong>
                                                 </p>
                                             </div>

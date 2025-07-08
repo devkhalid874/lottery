@@ -16,8 +16,8 @@ class InvestReportController extends Controller
         $pageTitle = 'Investment Statistics';
 
         $widget['total_invest']           = Transaction::where('remark', 'invest')->sum('amount');
-        $widget['invest_deposit_wallet']  = Transaction::where('wallet_type', 'deposit_wallet')->where('remark', 'invest')->sum('amount');
-        $widget['invest_interest_wallet'] = Transaction::where('wallet_type', 'interest_wallet')->where('remark', 'invest')->sum('amount');
+        $widget['invest_balance']  = Transaction::where('wallet_type', 'balance')->where('remark', 'invest')->sum('amount');
+        $widget['invest_balance'] = Transaction::where('wallet_type', 'balance')->where('remark', 'invest')->sum('amount');
 
         $widget['profit_to_give'] = Invest::where('status', Status::INVEST_RUNNING)->where('period', '>', 0)->sum('should_pay');
         $widget['profit_paid']    = Invest::where('status', Status::INVEST_RUNNING)->where('period', '>', 0)->sum('paid');

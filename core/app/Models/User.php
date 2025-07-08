@@ -164,7 +164,7 @@ class User extends Authenticatable
     public function scopeWithBalance($query)
     {
         return $query->where(function ($userWallet) {
-            $userWallet->where('deposit_wallet', '>', 0)->orWhere('interest_wallet', '>', 0);
+            $userWallet->where('balance', '>', 0)->orWhere('balance', '>', 0);
         });
     }
 

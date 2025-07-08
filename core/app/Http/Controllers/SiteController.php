@@ -10,6 +10,7 @@ use App\Models\Frontend;
 use App\Models\Language;
 use App\Constants\Status;
 use App\Models\Subscriber;
+use App\Models\Announcement;
 use Illuminate\Http\Request;
 use App\Models\SupportTicket;
 use App\Models\SupportMessage;
@@ -32,13 +33,18 @@ class SiteController extends Controller
         $seoContents = @$sections->seo_content;
         $seoImage    = @$seoContents->image ? getImage(getFilePath('seo') . '/' . @$seoContents->image, getFileSize('seo')) : null;
 
+
+        // Get latest active announcement
+        $announcement = Announcement::where('is_active', true)->latest()->first();
+
+
         // ✅ Fetch active games
-       if (auth()->check() && auth()->user()->selected_game_id) {
-    $games = Game::where('id', auth()->user()->selected_game_id)->where('status', 1)->get();
+        if (auth()->check() && auth()->user()->selected_game_id) {
+            $games = Game::where('id', auth()->user()->selected_game_id)->where('status', 1)->get();
         } else {
             $games = Game::where('status', 1)->where('featured', 1)->latest()->get();
         }
-        return view('Template::home', compact('pageTitle', 'sections', 'seoContents', 'seoImage', 'games'));
+        return view('Template::home', compact('pageTitle', 'sections', 'seoContents', 'seoImage', 'games', 'announcement'));
     }
 
     public function pages($slug)
