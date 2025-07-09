@@ -124,13 +124,13 @@
                 <a href="{{ route('home') }}" class="logo mb-3"><img src="{{ siteLogo('dark') }}" alt="images"></a>
                 <p class="footer-text mx-auto">{{ __(@$content->data_values->content) }}</p>
                 <ul class="footer-links d-flex flex-wrap gap-3 justify-content-center mt-3 mb-3">
-                    <li><a href="{{ route('home') }}" class="link-color">@lang('Home')</a></li>
-                    <li><a href="{{ route('contact') }}" class="link-color">@lang('Contact')</a></li>
-                    <li><a href="{{ route('user.login') }}" class="link-color">@lang('Sign In')</a></li>
-                    <li><a href="{{ route('user.register') }}" class="link-color">@lang('Sign Up')</a></li>
+                    <li><a href="{{ route('home') }}" class="link-color-footer">@lang('Home')</a></li>
+                    <li><a href="{{ route('contact') }}" class="link-color-footer">@lang('Contact')</a></li>
+                    <li><a href="{{ route('user.login') }}" class="link-color-footer">@lang('Sign In')</a></li>
+                    <li><a href="{{ route('user.register') }}" class="link-color-footer">@lang('Sign Up')</a></li>
                 </ul>
                 <p class="copy-right-text">&copy; {{ date('Y') }} <a href="{{ route('home') }}"
-                    class="text--base">{{ __(gs('site_name')) }}</a>. @lang('All Rights Reserved')</p>
+                    class="text--base-name">{{ __(gs('site_name')) }}</a>. @lang('All Rights Reserved')</p>
             </div>
         </div>
     </footer>

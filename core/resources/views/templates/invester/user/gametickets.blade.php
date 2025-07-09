@@ -3,8 +3,9 @@
 @section('content')
     <div class="dashboard-inner">
         <div class="mb-4">
-            <p>@lang('My Tickets')</p>
+          
             <h3>@lang('Purchased Ticket History')</h3>
+              <p>@lang('Here is your whole ticket history')</p>
         </div>
         <hr>
         {{-- Filter/Search (optional) --}}

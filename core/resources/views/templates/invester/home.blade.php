@@ -2,72 +2,87 @@
 
 @section('content')
 
-{{-- ✅ DYNAMIC ANNOUNCEMENT SECTION --}}
-@if ($announcement)
-    <section class="py-5 bg-light border-top border-bottom">
-        <div class="container">
-            @if ($announcement->title || $announcement->description)
-                {{-- ➕ Layout with image/video on left and text on right --}}
-                <div class="row align-items-center g-4">
-                    {{-- Media (Image or Video) --}}
-                    <div class="col-lg-6">
-                        @if ($announcement->media_type === 'video')
-                            <div class="ratio ratio-16x9 rounded-3 shadow-sm overflow-hidden">
-                                <video controls class="w-100 rounded shadow-sm">
-                                    <source src="{{ announcementAsset($announcement->media_path) }}" type="video/mp4">
-                                    Your browser does not support the video tag.
-                                </video>
-                            </div>
-                        @else
-                            <img src="{{ announcementAsset($announcement->media_path) }}" alt="Announcement"
-                                 class="img-fluid rounded shadow-sm w-100">
-                        @endif
+    @if ($announcements->count())
+        <section class="py-0 py-md-2 border-0" style="background-color: #fff;">
+            <div class="container">
+                <div id="announcementCarousel" class="carousel slide" data-bs-ride="carousel" data-bs-interval="3000"
+                    data-bs-pause="false">
+
+                    {{-- ✅ Dots Indicators --}}
+                    <div class="carousel-indicators">
+                        @foreach ($announcements as $key => $item)
+                            <button type="button" data-bs-target="#announcementCarousel"
+                                data-bs-slide-to="{{ $key }}"
+                                class="@if ($key == 0) active @endif"
+                                aria-current="@if ($key == 0) true @endif"
+                                aria-label="Slide {{ $key + 1 }}"></button>
+                        @endforeach
                     </div>
 
-                    {{-- Text Content --}}
-                    <div class="col-lg-6">
-                        @if ($announcement->title)
-                            <h3 class="fw-bold text-primary mb-3">📢 {{ $announcement->title }}</h3>
-                        @endif
-                        @if ($announcement->description)
-                            <p class="mb-4 text-muted fs-6">
-                                {{ $announcement->description }}
-                            </p>
-                        @endif
-                        <a href="#games" class="btn btn-outline-primary px-4 fw-semibold">
-                            View Games <i class="las la-arrow-right ms-2"></i>
-                        </a>
+                    <div class="carousel-inner">
+                        @foreach ($announcements as $key => $item)
+                            @php $mediaType = $item->media_type ?? 'image'; @endphp
+                            <div class="carousel-item @if ($key == 0) active @endif">
+                                <div class="d-flex align-items-center justify-content-center py-0 py-md-2">
+                                    @if ($item->title || $item->description)
+                                        <div class="row align-items-center g-4 w-100">
+                                            <div class="col-lg-6">
+                                                @if (!empty($item->media_path))
+                                                    @if ($mediaType === 'video')
+                                                        <div class="ratio ratio-16x9 rounded-3 shadow-sm overflow-hidden">
+                                                            <video controls class="w-100 rounded shadow-sm">
+                                                                <source src="{{ announcementAsset($item->media_path) }}"
+                                                                    type="video/mp4">
+                                                            </video>
+                                                        </div>
+                                                    @else
+                                                        <img src="{{ announcementAsset($item->media_path) }}"
+                                                            class="img-fluid rounded shadow-sm w-100" />
+                                                    @endif
+                                                @endif
+                                            </div>
+                                            <div class="col-lg-6">
+                                                @if ($item->title)
+                                                    <h3 class="fw-bold text-primary mb-3">📢 {{ $item->title }}</h3>
+                                                @endif
+                                                @if ($item->description)
+                                                    <p class="mb-4 text-muted fs-6">{{ $item->description }}</p>
+                                                @endif
+                                                <a href="#games" class="btn btn-outline-primary px-4 fw-semibold">
+                                                    View Games <i class="las la-arrow-right ms-2"></i>
+                                                </a>
+                                            </div>
+                                        </div>
+                                    @else
+                                        <div class="row w-100">
+                                            <div class="col-12">
+                                                @if (!empty($item->media_path))
+                                                    @if ($mediaType === 'video')
+                                                        <div class="ratio ratio-21x9 rounded-3 shadow-sm overflow-hidden">
+                                                            <video controls class="w-100 rounded shadow-sm">
+                                                                <source src="{{ announcementAsset($item->media_path) }}"
+                                                                    type="video/mp4">
+                                                            </video>
+                                                        </div>
+                                                    @else
+                                                        <img src="{{ announcementAsset($item->media_path) }}"
+                                                            class="img-fluid rounded shadow-sm w-100" />
+                                                    @endif
+                                                @endif
+                                            </div>
+                                        </div>
+                                    @endif
+                                </div>
+                            </div>
+                        @endforeach
                     </div>
                 </div>
-            @else
-                {{-- ➖ Full-width layout for media only --}}
-                <div class="row">
-                    <div class="col-12">
-                        @if ($announcement->media_type === 'video')
-                            <div class="ratio ratio-21x9 rounded-3 overflow-hidden shadow-sm">
-                                <video controls class="w-100 rounded shadow-sm">
-                                    <source src="{{ announcementAsset($announcement->media_path) }}" type="video/mp4">
-                                    Your browser does not support the video tag.
-                                </video>
-                            </div>
-                        @else
-                            <img src="{{ announcementAsset($announcement->media_path) }}" alt="Full Banner"
-                                 class="img-fluid rounded shadow-sm w-100">
-                        @endif
-                    </div>
-                </div>
-            @endif
-        </div>
-    </section>
-@endif
-
-
-
-
-
+            </div>
+        </section>
+    @endif
 
     {{-- ✅ ACTIVE GAMES SECTION --}}
-    <div class="container py-5" id="games">
+    <div class="container pt-2 pb-3 pb-mb-4 py-md-5" id="games">
         <h2 class="text-center fw-bold mb-5 display-6 text-primary"></h2>
 
         <div class="row g-4">
@@ -122,82 +137,162 @@
         </div>
     </div>
 
+    {{-- ✅ LEADERBOARD SECTION (CARD STYLE) --}}
+    <section class="py-5 bg-white border-top">
+        <div class="container">
+            <div class="row g-4">
+
+                {{-- LEFT CARD - Winners' Stories --}}
+                <div class="col-md-6">
+                    <div class="p-4 rounded-4 shadow h-100 d-flex flex-column justify-content-between"
+                        style="background: linear-gradient(to bottom right, #058ec8, #012b54);">
+                        <h4 class="text-white fw-bold mb-3">Our Latest <span class="text-warning">WINNERS'</span></h4>
+
+                        {{-- Winner Image --}}
+                        <div class="text-center mb-3">
+                            <img src="{{ asset('assets/images/images1.jfif') }}" alt="Latest Winner"
+                                class="img-fluid rounded shadow" style="height: 180px; width: auto; object-fit: cover;">
+                        </div>
+
+                        {{-- Winner Details --}}
+                        <div class="text-white text-center">
+                            <h4 class="fw-bold mb-1 text-light">Khalid Majeed</h4>
+                            <p class="mb-1">Won: <strong class="text-warning">PKR 200,000</strong></p>
+                            <p class="mb-3">Draw ID: <span class="text-light">#akraa0066</span></p>
+                        </div>
+
+                        {{-- More Stories Button --}}
+                        <a href="#" class="btn btn-outline-light fw-bold w-100 rounded mt-auto">
+                            MORE STORIES
+                        </a>
+                    </div>
+                </div>
+
+                {{-- RIGHT CARD - Latest Draw Results --}}
+                <div class="col-md-6">
+                    <div class="p-4 rounded-4 shadow h-100 d-flex flex-column justify-content-between"
+                        style="background: linear-gradient(to bottom right, #03496f, #6a5bc0);">
+                        <div>
+                            <h5 class="text-white fw-bold mb-2">LATEST DRAW RESULTS</h5>
+                            <h3 class="fw-bold text-white">GRAND DRAW</h3>
+
+                            <div class="d-flex flex-wrap gap-2 my-3">
+                                @foreach ([7, 13, 24, 31, 43] as $number)
+                                    <div class="rounded-circle bg-primary text-white d-flex align-items-center justify-content-center"
+                                        style="width: 48px; height: 48px; font-weight: bold;">
+                                        {{ $number }}
+                                    </div>
+                                @endforeach
+                            </div>
+
+                            <h5 class="fw-bold text-white">TRIPLE 100 RAFFLE</h5>
+
+                            <div class="my-3">
+                                @foreach ([42436810, 42517438, 42646189] as $raffleId)
+                                    <div
+                                        class="d-flex justify-content-between align-items-center bg-primary text-white px-3 py-2 rounded mb-2">
+                                        <span>Ticket ID {{ $raffleId }}</span>
+                                        <span>PKR 100,000</span>
+                                    </div>
+                                @endforeach
+                            </div>
+                        </div>
+
+                        <a href="#"
+                            class="btn btn-outline-primary bg-white text-light fw-bold w-100 rounded mt-auto">
+                            PREVIOUS RESULTS
+                        </a>
+                    </div>
+                </div>
+
+            </div>
+        </div>
+    </section>
+
 
     {{-- LOGIN MODAL --}}
     <div class="modal fade" id="loginModal" tabindex="-1">
         <div class="modal-dialog modal-dialog-centered">
-            <div class="modal-content p-4">
-                <h5 class="fw-bold mb-3 text-center">🔐 Login to Continue</h5>
+            <div class="modal-content border-0 shadow rounded-4 p-4 bg-light bg-opacity-75 backdrop-blur">
+
+                <a href="{{ route('home')}}" class="logo text-center"><img src="{{ siteLogo('dark') }}" alt="images"></a>
+
+                <h5 class="fw-bold text-primary text-center mb-3">Login to Continue</h5>
 
                 <form method="POST" action="{{ route('user.login') }}">
                     @csrf
                     <input type="hidden" name="redirect_game_id" id="redirectGameIdInput">
+
                     <div class="mb-3">
-                        <label class="form-label">Email or Username</label>
-                        <input type="text" class="form-control" name="username" required />
+                        <label class="form-label text-secondary">Email or Username</label>
+                        <input type="text" class="form-control rounded-pill" name="username" required />
                     </div>
 
                     <div class="mb-3">
-                        <label class="form-label">Password</label>
-                        <input type="password" class="form-control" name="password" required id="login-password" />
+                        <label class="form-label text-secondary">Password</label>
+                        <input type="password" class="form-control rounded-pill" name="password" required
+                            id="login-password" />
                     </div>
 
                     <div class="d-grid">
-                        <button type="submit" class="btn btn-primary w-100">Login</button>
+                        <button type="submit" class="btn btn-primary rounded-pill">Login</button>
                     </div>
 
                     <div class="text-center mt-3">
-                        <small>Don't have an account? <a href="#" data-bs-toggle="modal"
-                                data-bs-target="#registerModal" data-bs-dismiss="modal">Register</a></small>
+                        <small class="text-muted">Don't have an account?
+                            <a href="#" data-bs-toggle="modal" data-bs-target="#registerModal"
+                                data-bs-dismiss="modal" class="text-decoration-none text-primary fw-semibold">Register</a>
+                        </small>
                     </div>
                 </form>
             </div>
         </div>
     </div>
 
-
-
     {{-- REGISTER MODAL --}}
     <div class="modal fade" id="registerModal" tabindex="-1">
         <div class="modal-dialog modal-dialog-centered">
-            <div class="modal-content p-4">
-                <h5 class="fw-bold mb-3 text-center">📝 Register to Play</h5>
+            <div class="modal-content border-0 shadow rounded-4 p-4 bg-light bg-opacity-75 backdrop-blur">
+                 <a href="{{ route('home') }}" class="logo text-center"><img src="{{ siteLogo('dark') }}" alt="images"></a>
+                <h5 class="fw-bold text-center mb-3">Register to Play</h5>
 
                 <form method="POST" action="{{ route('user.register') }}">
                     @csrf
+
                     <div class="mb-3">
-                        <label class="form-label">First Name</label>
-                        <input type="text" name="firstname" class="form-control" required />
+                        <label class="form-label text-secondary">First Name</label>
+                        <input type="text" name="firstname" class="form-control rounded-pill" required />
                     </div>
 
                     <div class="mb-3">
-                        <label class="form-label">Last Name</label>
-                        <input type="text" name="lastname" class="form-control" required />
+                        <label class="form-label text-secondary">Last Name</label>
+                        <input type="text" name="lastname" class="form-control rounded-pill" required />
                     </div>
 
                     <div class="mb-3">
-                        <label class="form-label">Email Address</label>
-                        <input type="email" name="email" class="form-control" required />
+                        <label class="form-label text-secondary">Email Address</label>
+                        <input type="email" name="email" class="form-control rounded-pill" required />
                     </div>
 
                     <div class="mb-3">
-                        <label class="form-label">Password</label>
-                        <input type="password" name="password" class="form-control" required id="register-password" />
+                        <label class="form-label text-secondary">Password</label>
+                        <input type="password" name="password" class="form-control rounded-pill" required
+                            id="register-password" />
                     </div>
 
                     <div class="mb-3">
-                        <label class="form-label">Confirm Password</label>
-                        <input type="password" name="password_confirmation" class="form-control" required />
+                        <label class="form-label text-secondary">Confirm Password</label>
+                        <input type="password" name="password_confirmation" class="form-control rounded-pill" required />
                     </div>
 
                     <div class="d-grid">
-                        <button type="submit" class="btn btn-success w-100">Register</button>
+                        <button type="submit" class="btn btn-success rounded-pill">Register</button>
                     </div>
 
                     <div class="text-center mt-3">
-                        <small>Already have an account?
+                        <small class="text-muted">Already have an account?
                             <a href="#" data-bs-toggle="modal" data-bs-target="#loginModal"
-                                data-bs-dismiss="modal">Login</a>
+                                data-bs-dismiss="modal" class="text-decoration-none fw-semibold">Login</a>
                         </small>
                     </div>
                 </form>
@@ -212,10 +307,26 @@
             <div class="modal-content text-center p-4">
                 <h5 class="text-danger fw-bold mb-3">Insufficient Balance</h5>
                 <p>Your wallet does not have enough funds to complete this purchase.</p>
-                <a href="{{ route('user.deposit.index') }}" class="btn btn-warning">Deposit Now</a>
+                <a href="{{ route('user.deposit.index') }}" class="btn">Deposit Now</a>
             </div>
         </div>
     </div>
+
+    {{-- Toast Container --}}
+    <div class="position-fixed start-50 translate-middle-x p-3" style="top: 100px; z-index: 1100;">
+
+        <div id="numberLimitToast" class="toast align-items-center text-white bg-danger border-0 shadow" role="alert"
+            aria-live="assertive" aria-atomic="true">
+            <div class="d-flex">
+                <div class="toast-body">
+                    ⚠️ You can only select up to 6 numbers per game.
+                </div>
+                <button type="button" class="btn-close btn-close-white me-2 m-auto" data-bs-dismiss="toast"
+                    aria-label="Close"></button>
+            </div>
+        </div>
+    </div>
+
 
     {{-- JS --}}
     <script>
@@ -242,7 +353,9 @@
                 if (index !== -1) selected.splice(index, 1);
             } else {
                 if (selected.length >= 6) {
-                    alert("You can only select up to 6 numbers per game.");
+                    const toastEl = document.getElementById('numberLimitToast');
+                    const toast = new bootstrap.Toast(toastEl);
+                    toast.show();
                     return;
                 }
                 el.classList.add('selected');
@@ -309,7 +422,7 @@
                 }
             });
         }
-        
+
 
 
         function updateCountdowns() {

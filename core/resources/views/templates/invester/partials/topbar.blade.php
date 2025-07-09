@@ -4,7 +4,7 @@
             <i class="fas fa-bars"></i>
         </div>
               {{-- ✅ Back to Landing Page Button --}}
-        <a href="{{ route('home') }}" class="btn btn-sm btn-outline-primary">
+        <a href="{{ route('home') }}" class="btn btn--base">
             <i class="las la-arrow-left"></i> @lang('Back to Home')
         </a>
     </div>

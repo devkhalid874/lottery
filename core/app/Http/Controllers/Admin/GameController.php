@@ -66,6 +66,7 @@ class GameController extends Controller
         $plan->close_time        = $request->close_time;
         $plan->auto_close        = $request->auto_close ? 1 : 0;
         $plan->featured          = $request->featured ? Status::YES : Status::NO;
+        $plan->winning_amount   = $request->winning_amount;
 
 
         $plan->save();
@@ -94,6 +95,7 @@ class GameController extends Controller
             'close_time'    => 'required|date_format:H:i',
             'auto_close'    => 'nullable|in:1',
             'featured'     => 'nullable|boolean',
+            'winning_amount' => 'required|numeric',
         ]);
 
         if ($request->compound_interest && ((!$request->capital_back && !$request->return_type) || $request->interest_type == 2)) {

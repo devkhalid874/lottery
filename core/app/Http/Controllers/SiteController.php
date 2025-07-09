@@ -35,7 +35,8 @@ class SiteController extends Controller
 
 
         // Get latest active announcement
-        $announcement = Announcement::where('is_active', true)->latest()->first();
+     $announcements = Announcement::where('is_active', true)->latest()->get();
+
 
 
         // ✅ Fetch active games
@@ -44,7 +45,7 @@ class SiteController extends Controller
         } else {
             $games = Game::where('status', 1)->where('featured', 1)->latest()->get();
         }
-        return view('Template::home', compact('pageTitle', 'sections', 'seoContents', 'seoImage', 'games', 'announcement'));
+        return view('Template::home', compact('pageTitle', 'sections', 'seoContents', 'seoImage', 'games', 'announcements'));
     }
 
     public function pages($slug)

@@ -15,9 +15,9 @@
                                     <th>@lang('Name')</th>
                                     <th>@lang('Ticket Price')</th>
                                     <th>@lang('Number Range')</th>
+                                    <th>@lang('Winning Amount')</th>
                                     <th>@lang('Open Time')</th>
                                     <th>@lang('Close Time')</th>
-                                    <th>@lang('Auto Close')</th>
                                     <th>@lang('Featured')</th>
                                     <th>@lang('Status')</th>
                                     <th>@lang('Action')</th>
@@ -30,15 +30,9 @@
                                         <td>{{ __($plan->name) }}</td>
                                         <td>{{ showAmount($plan->ticket_price) }}</td>
                                         <td>{{ $plan->range_start }} - {{ $plan->range_end }}</td>
+                                        <td>{{ ($plan->winning_amount) }}</td>
                                         <td>{{ showDateTime($plan->open_time) }}</td>
                                         <td>{{ showDateTime($plan->close_time) }}</td>
-                                        <td>
-                                            @if ($plan->auto_close)
-                                                <span class="badge badge--success">@lang('Yes')</span>
-                                            @else
-                                                <span class="badge badge--warning">@lang('No')</span>
-                                            @endif
-                                        </td>
                                         <td>
                                             @if ($plan->featured)
                                                 <span class="badge badge--success">@lang('Yes')</span>
@@ -65,7 +59,7 @@
                                             <button type="button" class="btn btn-sm btn-outline--primary modalShow me-2"
                                                 data-bs-toggle="modal" data-bs-target="#editModal"
                                                 data-action="{{ route('admin.game.update', $plan->id) }}"
-                                                data-name="{{ $plan->name }}" data-price="{{ $plan->ticket_price }}"
+                                                data-name="{{ $plan->name }}" data-price="{{ $plan->ticket_price }}"data-winning-amount="{{ $plan->winning_amount }}"
                                                 data-start="{{ $plan->range_start }}" data-end="{{ $plan->range_end }}"
                                                 data-open="{{ $plan->open_time }}" data-close="{{ $plan->close_time }}"
                                                 data-auto="{{ $plan->auto_close }}" data-featured="{{ $plan->featured }}">
@@ -147,6 +141,14 @@
                                 </div>
                             </div>
 
+                               <!-- Winning Amount -->
+                             <div class="col-md-6">
+                                <div class="form-group">
+                                    <label>@lang('Winning Amount')</label>
+                                    <input type="text" class="form-control" name="winning_amount" required>
+                                </div>
+                            </div>
+
                             <!-- Open Time -->
                             <div class="col-md-6">
                                 <div class="form-group">
@@ -164,14 +166,14 @@
                             </div>
 
                             <!-- Auto Close Toggle -->
-                            <div class="col-md-6 col-lg-6">
+                            {{-- <div class="col-md-6 col-lg-6">
                                 <div class="form-group">
                                     <label>@lang('Auto Close')</label>
                                     <input type="checkbox" name="auto_close" value="1" data-width="100%"
                                         data-onstyle="-success" data-offstyle="-danger" data-bs-toggle="toggle"
                                         data-on="@lang('Yes')" data-off="@lang('No')">
                                 </div>
-                            </div>
+                            </div> --}}
 
                             <!-- Featured Toggle -->
                             <div class="col-md-6 col-lg-6">
@@ -182,6 +184,8 @@
                                         data-on="@lang('Yes')" data-off="@lang('No')">
                                 </div>
                             </div>
+
+            
                         </div>
                     </div>
                     <div class="modal-footer">
@@ -240,6 +244,14 @@
                                     <input type="text" name="range_end" maxlength="2" class="form-control" required>
                                 </div>
                             </div>
+ 
+                            {{-- Winning Amount --}}
+                              <div class="col-md-6">
+                                <div class="form-group">
+                                    <label>@lang('Winning Amount')</label>
+                                    <input type="text" name="winning_amount" class="form-control" required>
+                                </div>
+                            </div>
 
                             {{-- Open Time --}}
                             <div class="col-md-6">
@@ -257,15 +269,7 @@
                                 </div>
                             </div>
 
-                            {{-- Auto Close --}}
-                            <div class="col-md-6">
-                                <div class="form-group">
-                                    <label>@lang('Auto Close')</label>
-                                    <input type="checkbox" name="auto_close" value="1" data-bs-toggle="toggle"
-                                        data-on="@lang('Yes')" data-off="@lang('No')">
-                                </div>
-                            </div>
-
+                    
                             {{-- Featured --}}
                             <div class="col-md-6">
                                 <div class="form-group">
@@ -310,6 +314,7 @@
                 modal.find('[name=ticket_price]').val($(this).data('price'));
                 modal.find('[name=range_start]').val(('0' + $(this).data('start')).slice(-2));
                 modal.find('[name=range_end]').val(('0' + $(this).data('end')).slice(-2));
+                modal.find('[name=winning_amount]').val($(this).data('winning-amount'));
 
                 // Convert to proper datetime-local format
                 modal.find('[name=open_time]').val(formatDate($(this).data('open')));
