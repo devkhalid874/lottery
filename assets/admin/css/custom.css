@@ -564,3 +564,8 @@
     padding: 14px 15px;
 }
 }
+
+.custom-table-head {
+    background-color: #4634ff;
+    color: white;
+}

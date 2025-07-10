@@ -3,7 +3,7 @@
 @section('content')
 
     @if ($announcements->count())
-        <section class="py-0 py-md-2 border-0" style="background-color: #fff;">
+        <section class="py-0 py-md-0 border-0" style="background-color: #fff;">
             <div class="container">
                 <div id="announcementCarousel" class="carousel slide" data-bs-ride="carousel" data-bs-interval="3000"
                     data-bs-pause="false">
@@ -82,7 +82,7 @@
     @endif
 
     {{-- ✅ ACTIVE GAMES SECTION --}}
-    <div class="container pt-2 pb-3 pb-mb-4 py-md-5" id="games">
+    <div class="container pt-1 pb-2  py-md-3" id="games">
         <h2 class="text-center fw-bold mb-5 display-6 text-primary"></h2>
 
         <div class="row g-4">
@@ -96,8 +96,8 @@
                             </p>
 
                             <div class="d-flex justify-content-center gap-3 mb-3 countdown-timer"
-                                data-close-time="{{ $game->close_time }}" id="countdown-{{ $game->id }}">
-                                @foreach (['Days' => 'days', 'Hours' => 'hours', 'Mins' => 'mins', 'Secs' => 'secs'] as $label => $class)
+                                data-close-time="{{ \Carbon\Carbon::today()->format('Y-m-d') }} {{ $game->close_time }}" id="countdown-{{ $game->id }}">
+                                @foreach (['Hours' => 'hours', 'Mins' => 'mins', 'Secs' => 'secs'] as $label => $class)
                                     <div class="text-center">
                                         <div class="countdown-circle flat-style">
                                             <span class="fw-bold text-primary {{ $class }}">00</span>
@@ -312,6 +312,18 @@
         </div>
     </div>
 
+    <!-- Game Closed Modal -->
+<div class="modal fade" id="gameClosedModal" tabindex="-1" aria-hidden="true">
+    <div class="modal-dialog modal-dialog-centered">
+        <div class="modal-content border-0 shadow rounded-4 p-4 text-center">
+            <h5 class="text-danger fw-bold mb-3">Game Closed</h5>
+            <p id="gameClosedMessage">This game is not open right now. Please try during the open hours.</p>
+            <button type="button" class="btn btn-secondary mt-2" data-bs-dismiss="modal">Close</button>
+        </div>
+    </div>
+</div>
+
+
     {{-- Toast Container --}}
     <div class="position-fixed start-50 translate-middle-x p-3" style="top: 100px; z-index: 1100;">
 
@@ -413,7 +425,14 @@
                             el.classList.remove('selected')
                         );
                     } else {
-                        new bootstrap.Modal(document.getElementById('insufficientModal')).show();
+                        if (res.message.includes('only open between')) {
+            // Show Game Closed Modal
+            document.getElementById('gameClosedMessage').textContent = res.message;
+            new bootstrap.Modal(document.getElementById('gameClosedModal')).show();
+        } else {
+            // Show Insufficient Balance Modal
+            new bootstrap.Modal(document.getElementById('insufficientModal')).show();
+        }
                     }
                 },
 
@@ -425,32 +444,29 @@
 
 
 
-        function updateCountdowns() {
-            const countdowns = document.querySelectorAll('.countdown-timer');
+     function updateCountdowns() {
+    const countdowns = document.querySelectorAll('.countdown-timer');
 
-            countdowns.forEach(timer => {
-                const closeTime = new Date(timer.dataset.closeTime).getTime();
-                const now = new Date().getTime();
-                const distance = closeTime - now;
+    countdowns.forEach(timer => {
+        const closeTimeStr = timer.dataset.closeTime; // e.g., "2025-07-10 23:00:00"
+        const closeTime = new Date(closeTimeStr).getTime();
+        const now = new Date().getTime();
+        const distance = closeTime - now;
 
-                let days = 0,
-                    hours = 0,
-                    mins = 0,
-                    secs = 0;
-
-                if (distance > 0) {
-                    days = Math.floor(distance / (1000 * 60 * 60 * 24));
-                    hours = Math.floor((distance % (1000 * 60 * 60 * 24)) / (1000 * 60 * 60));
-                    mins = Math.floor((distance % (1000 * 60 * 60)) / (1000 * 60));
-                    secs = Math.floor((distance % (1000 * 60)) / 1000);
-                }
-
-                timer.querySelector('.days').textContent = String(days).padStart(2, '0');
-                timer.querySelector('.hours').textContent = String(hours).padStart(2, '0');
-                timer.querySelector('.mins').textContent = String(mins).padStart(2, '0');
-                timer.querySelector('.secs').textContent = String(secs).padStart(2, '0');
-            });
+        if (distance <= 0) {
+            timer.innerHTML = `<div class="text-danger fw-bold">Game Closed</div>`;
+            return;
         }
+
+        const hours = Math.floor((distance % (1000 * 60 * 60 * 24)) / (1000 * 60 * 60));
+        const mins = Math.floor((distance % (1000 * 60 * 60)) / (1000 * 60));
+        const secs = Math.floor((distance % (1000 * 60)) / 1000);
+
+        timer.querySelector('.hours').textContent = String(hours).padStart(2, '0');
+        timer.querySelector('.mins').textContent = String(mins).padStart(2, '0');
+        timer.querySelector('.secs').textContent = String(secs).padStart(2, '0');
+    });
+}
 
         setInterval(updateCountdowns, 1000);
         updateCountdowns(); // Initial run

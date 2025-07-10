@@ -12,7 +12,7 @@
                     @csrf
                     <label>Select Winning Numbers</label>
                     <div class="row">
-                        <div class="col-md-3 mb-2">
+                        <div class="col-md-3 mb-2">  
                             <input type="number" name="winning_numbers[]" class="form-control" placeholder="Number 1" required>
                         </div>
                         <div class="col-md-3 mb-2">

@@ -7,7 +7,8 @@ use Illuminate\Database\Eloquent\Model;
 class Ticket extends Model
 {
     protected $casts = [
-    'number' => 'array',    
+    'number' => 'array',   
+      'created_at' => 'datetime', 
 ];
      protected $fillable = [
         'user_id', 'game_id', 'number', 'ticket_id', 'amount'

@@ -2,7 +2,7 @@
 
 use Illuminate\Support\Facades\Route;
 use App\Http\Controllers\Admin\AnnouncementController;
-
+use App\Http\Controllers\Admin\GameticketsController;
 
 Route::namespace('Auth')->group(function () {
     Route::middleware('admin.guest')->group(function(){
@@ -234,7 +234,7 @@ Route::middleware('admin')->group(function () {
     });
 
 
-        //Ticket added new link
+        // Game Tickets
      Route::controller('GameticketsController')->name('gametickets.')->prefix('gametickets')->group(function () {
         Route::get('gameticket/{id}/tickets', 'gameticket')->name('gameticket');
         Route::get('/', 'gameList')->name('gameticket.list');

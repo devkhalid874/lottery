@@ -32,7 +32,7 @@ class GameTicketController extends Controller
         if ($now < $game->open_time || $now > $game->close_time) {
             return response()->json([
                 'success' => false,
-                'message' => "This game is only open between " . date('g:i A', strtotime($game->open_time)) . " and " . date('g:i A', strtotime($game->close_time)) . ". Please try during that time."
+                'message' => "This game is only open between " . date('g:i A', strtotime($game->open_time)) . " To " . date('g:i A', strtotime($game->close_time)) . ". Please try during that time."
             ]);
         }
 
@@ -47,14 +47,43 @@ class GameTicketController extends Controller
         $user->save();
 
         // Create one ticket per number
-        foreach ($numbers as $number) {
-            Ticket::create([
-                'user_id'   => $user->id,
-                'game_id'   => $game->id,
-                'number'    => $number,
-                'amount'    => $ticketPrice,
-            ]);
+ foreach ($numbers as $number) {
+    $number = trim($number); // extra safety
+    $isWinner = 0;
+
+    if (!empty($game->winning_numbers)) {
+        $winningNumbers = is_array($game->winning_numbers)
+            ? $game->winning_numbers
+            : json_decode($game->winning_numbers, true);
+
+        $normalizedTicketNumber = str_pad(preg_replace('/\D/', '', $number), 2, '0', STR_PAD_LEFT);
+
+        $winningNumbers = array_map(function ($num) {
+            $num = preg_replace('/\D/', '', $num);
+            return str_pad($num, 2, '0', STR_PAD_LEFT);
+        }, $winningNumbers);
+
+        if (in_array($normalizedTicketNumber, $winningNumbers)) {
+            $isWinner = 1;
         }
+    }
+
+    \Log::info('Creating Ticket:', [
+        'number' => $number,
+        'normalized' => $normalizedTicketNumber,
+        'winning_numbers' => $winningNumbers,
+        'isWinner' => $isWinner,
+    ]);
+
+    Ticket::create([
+        'user_id'   => $user->id,
+        'game_id'   => $game->id,
+        'number'    => $number,
+        'amount'    => $ticketPrice,
+        'is_winner' => $isWinner,
+    ]);
+}
+
 
         return response()->json([
             'success' => true,

@@ -3425,7 +3425,7 @@ select:focus-within {
 
 .table td {
   font-size: 0.8125rem;
-  color: #5b6e88;
+  color: black;
   text-align: center;
   font-weight: 500;
   padding: 15px 25px;
