@@ -96,7 +96,8 @@
                             </p>
 
                             <div class="d-flex justify-content-center gap-3 mb-3 countdown-timer"
-                                data-close-time="{{ \Carbon\Carbon::today()->format('Y-m-d') }} {{ $game->close_time }}" id="countdown-{{ $game->id }}">
+                                data-close-time="{{ \Carbon\Carbon::today()->format('Y-m-d') }} {{ $game->close_time }}"
+                                id="countdown-{{ $game->id }}">
                                 @foreach (['Hours' => 'hours', 'Mins' => 'mins', 'Secs' => 'secs'] as $label => $class)
                                     <div class="text-center">
                                         <div class="countdown-circle flat-style">
@@ -142,72 +143,49 @@
         <div class="container">
             <div class="row g-4">
 
-                {{-- LEFT CARD - Winners' Stories --}}
-                <div class="col-md-6">
-                    <div class="p-4 rounded-4 shadow h-100 d-flex flex-column justify-content-between"
-                        style="background: linear-gradient(to bottom right, #058ec8, #012b54);">
-                        <h4 class="text-white fw-bold mb-3">Our Latest <span class="text-warning">WINNERS'</span></h4>
+                @foreach ($leaderboardGroups as $gameId => $winners)
+                    @php $game = $winners->first()->game; @endphp
 
-                        {{-- Winner Image --}}
-                        <div class="text-center mb-3">
-                            <img src="{{ asset('assets/images/images1.jfif') }}" alt="Latest Winner"
-                                class="img-fluid rounded shadow" style="height: 180px; width: auto; object-fit: cover;">
-                        </div>
+                    <div class="col-md-6">
+                        <div class="p-4 rounded-4 shadow h-100 d-flex flex-column justify-content-between"
+                            style="background: linear-gradient(to bottom right, #058ec8, #012b54);">
+                            <h4 class="text-white fw-semibold mb-4 border-bottom pb-2">
+                                🏆 Winners of <span class="text-warning">{{ $game->name ?? 'Game #' . $gameId }}</span>
+                            </h4>
 
-                        {{-- Winner Details --}}
-                        <div class="text-white text-center">
-                            <h4 class="fw-bold mb-1 text-light">Khalid Majeed</h4>
-                            <p class="mb-1">Won: <strong class="text-warning">PKR 200,000</strong></p>
-                            <p class="mb-3">Draw ID: <span class="text-light">#akraa0066</span></p>
-                        </div>
-
-                        {{-- More Stories Button --}}
-                        <a href="#" class="btn btn-outline-light fw-bold w-100 rounded mt-auto">
-                            MORE STORIES
-                        </a>
-                    </div>
-                </div>
-
-                {{-- RIGHT CARD - Latest Draw Results --}}
-                <div class="col-md-6">
-                    <div class="p-4 rounded-4 shadow h-100 d-flex flex-column justify-content-between"
-                        style="background: linear-gradient(to bottom right, #03496f, #6a5bc0);">
-                        <div>
-                            <h5 class="text-white fw-bold mb-2">LATEST DRAW RESULTS</h5>
-                            <h3 class="fw-bold text-white">GRAND DRAW</h3>
-
-                            <div class="d-flex flex-wrap gap-2 my-3">
-                                @foreach ([7, 13, 24, 31, 43] as $number)
-                                    <div class="rounded-circle bg-primary text-white d-flex align-items-center justify-content-center"
-                                        style="width: 48px; height: 48px; font-weight: bold;">
-                                        {{ $number }}
+                            {{-- Winner List --}}
+                            <div class="winner-slider text-white">
+                                @foreach ($winners as $winner)
+                                    <div class="mb-4 pb-3 border-bottom border-white">
+                                        <h5 class="fw-semibold text-light mb-1">
+                                            {{ $winner->user->firstname ?? 'Guest' }}
+                                        </h5>
+                                        <p class="mb-1 small text-light">
+                                            🎉 Prize: <strong class="text-warning">
+                                                PKR {{ number_format($winner->winning_prize ?? 0) }}
+                                            </strong>
+                                        </p>
+                                        <p class="mb-0 small text-light">
+                                            🎟️ Ticket ID: <span class="text-white-50">
+                                                #{{ getTicketId($winner->ticket_id) }}
+                                            </span>
+                                        </p>
                                     </div>
                                 @endforeach
                             </div>
 
-                            <h5 class="fw-bold text-white">TRIPLE 100 RAFFLE</h5>
-
-                            <div class="my-3">
-                                @foreach ([42436810, 42517438, 42646189] as $raffleId)
-                                    <div
-                                        class="d-flex justify-content-between align-items-center bg-primary text-white px-3 py-2 rounded mb-2">
-                                        <span>Ticket ID {{ $raffleId }}</span>
-                                        <span>PKR 100,000</span>
-                                    </div>
-                                @endforeach
-                            </div>
+                            {{-- Optional Button --}}
+                            {{-- <a href="#" class="btn btn-outline-light fw-bold w-100 mt-auto">
+                            View All
+                        </a> --}}
                         </div>
-
-                        <a href="#"
-                            class="btn btn-outline-primary bg-white text-light fw-bold w-100 rounded mt-auto">
-                            PREVIOUS RESULTS
-                        </a>
                     </div>
-                </div>
+                @endforeach
 
             </div>
         </div>
     </section>
+
 
 
     {{-- LOGIN MODAL --}}
@@ -215,7 +193,8 @@
         <div class="modal-dialog modal-dialog-centered">
             <div class="modal-content border-0 shadow rounded-4 p-4 bg-light bg-opacity-75 backdrop-blur">
 
-                <a href="{{ route('home')}}" class="logo text-center"><img src="{{ siteLogo('dark') }}" alt="images"></a>
+                <a href="{{ route('home') }}" class="logo text-center"><img src="{{ siteLogo('dark') }}"
+                        alt="images"></a>
 
                 <h5 class="fw-bold text-primary text-center mb-3">Login to Continue</h5>
 
@@ -253,7 +232,8 @@
     <div class="modal fade" id="registerModal" tabindex="-1">
         <div class="modal-dialog modal-dialog-centered">
             <div class="modal-content border-0 shadow rounded-4 p-4 bg-light bg-opacity-75 backdrop-blur">
-                 <a href="{{ route('home') }}" class="logo text-center"><img src="{{ siteLogo('dark') }}" alt="images"></a>
+                <a href="{{ route('home') }}" class="logo text-center"><img src="{{ siteLogo('dark') }}"
+                        alt="images"></a>
                 <h5 class="fw-bold text-center mb-3">Register to Play</h5>
 
                 <form method="POST" action="{{ route('user.register') }}">
@@ -313,15 +293,15 @@
     </div>
 
     <!-- Game Closed Modal -->
-<div class="modal fade" id="gameClosedModal" tabindex="-1" aria-hidden="true">
-    <div class="modal-dialog modal-dialog-centered">
-        <div class="modal-content border-0 shadow rounded-4 p-4 text-center">
-            <h5 class="text-danger fw-bold mb-3">Game Closed</h5>
-            <p id="gameClosedMessage">This game is not open right now. Please try during the open hours.</p>
-            <button type="button" class="btn btn-secondary mt-2" data-bs-dismiss="modal">Close</button>
+    <div class="modal fade" id="gameClosedModal" tabindex="-1" aria-hidden="true">
+        <div class="modal-dialog modal-dialog-centered">
+            <div class="modal-content border-0 shadow rounded-4 p-4 text-center">
+                <h5 class="text-danger fw-bold mb-3">Game Closed</h5>
+                <p id="gameClosedMessage">This game is not open right now. Please try during the open hours.</p>
+                <button type="button" class="btn btn-secondary mt-2" data-bs-dismiss="modal">Close</button>
+            </div>
         </div>
     </div>
-</div>
 
 
     {{-- Toast Container --}}
@@ -426,13 +406,13 @@
                         );
                     } else {
                         if (res.message.includes('only open between')) {
-            // Show Game Closed Modal
-            document.getElementById('gameClosedMessage').textContent = res.message;
-            new bootstrap.Modal(document.getElementById('gameClosedModal')).show();
-        } else {
-            // Show Insufficient Balance Modal
-            new bootstrap.Modal(document.getElementById('insufficientModal')).show();
-        }
+                            // Show Game Closed Modal
+                            document.getElementById('gameClosedMessage').textContent = res.message;
+                            new bootstrap.Modal(document.getElementById('gameClosedModal')).show();
+                        } else {
+                            // Show Insufficient Balance Modal
+                            new bootstrap.Modal(document.getElementById('insufficientModal')).show();
+                        }
                     }
                 },
 
@@ -444,29 +424,29 @@
 
 
 
-     function updateCountdowns() {
-    const countdowns = document.querySelectorAll('.countdown-timer');
+        function updateCountdowns() {
+            const countdowns = document.querySelectorAll('.countdown-timer');
 
-    countdowns.forEach(timer => {
-        const closeTimeStr = timer.dataset.closeTime; // e.g., "2025-07-10 23:00:00"
-        const closeTime = new Date(closeTimeStr).getTime();
-        const now = new Date().getTime();
-        const distance = closeTime - now;
+            countdowns.forEach(timer => {
+                const closeTimeStr = timer.dataset.closeTime; // e.g., "2025-07-10 23:00:00"
+                const closeTime = new Date(closeTimeStr).getTime();
+                const now = new Date().getTime();
+                const distance = closeTime - now;
 
-        if (distance <= 0) {
-            timer.innerHTML = `<div class="text-danger fw-bold">Game Closed</div>`;
-            return;
+                if (distance <= 0) {
+                    timer.innerHTML = `<div class="text-danger fw-bold">Game Closed</div>`;
+                    return;
+                }
+
+                const hours = Math.floor((distance % (1000 * 60 * 60 * 24)) / (1000 * 60 * 60));
+                const mins = Math.floor((distance % (1000 * 60 * 60)) / (1000 * 60));
+                const secs = Math.floor((distance % (1000 * 60)) / 1000);
+
+                timer.querySelector('.hours').textContent = String(hours).padStart(2, '0');
+                timer.querySelector('.mins').textContent = String(mins).padStart(2, '0');
+                timer.querySelector('.secs').textContent = String(secs).padStart(2, '0');
+            });
         }
-
-        const hours = Math.floor((distance % (1000 * 60 * 60 * 24)) / (1000 * 60 * 60));
-        const mins = Math.floor((distance % (1000 * 60 * 60)) / (1000 * 60));
-        const secs = Math.floor((distance % (1000 * 60)) / 1000);
-
-        timer.querySelector('.hours').textContent = String(hours).padStart(2, '0');
-        timer.querySelector('.mins').textContent = String(mins).padStart(2, '0');
-        timer.querySelector('.secs').textContent = String(secs).padStart(2, '0');
-    });
-}
 
         setInterval(updateCountdowns, 1000);
         updateCountdowns(); // Initial run
@@ -500,6 +480,22 @@
                 localStorage.removeItem('redirectGameId');
             });
         </script>
+@endif
+
+@if (session('winner_alert'))
+    <script>
+        document.addEventListener('DOMContentLoaded', function () {
+            Swal.fire({
+                icon: 'success',
+                title: 'Winner!',
+                text: '{{ session('winner_alert') }}',
+                confirmButtonText: 'Awesome!'
+            });
+        });
+    </script>
+@endif
+
+
 
         <style>
             /* Optional: add visual highlight to selected game after login */
@@ -522,8 +518,20 @@
                     background-color: #e3f2fd;
                 }
             }
+
+            .winner-slider h5 {
+                font-size: 1.1rem;
+            }
+
+            .winner-slider p {
+                font-size: 0.9rem;
+            }
+
+            .winner-slider .border-bottom {
+                margin-bottom: 1rem;
+            }
         </style>
-    @endif
+
 
     {{-- other HTML and scripts above this --}}
 

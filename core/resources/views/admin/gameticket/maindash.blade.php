@@ -4,40 +4,37 @@
 
     <h3>{{ $game->name }}</h3>
 
-    {{-- Winner Form --}}
-    @if (!$game->winning_numbers)
-        <div class="card mb-4">
-            <div class="card-body">
-                <form action="{{ route('admin.gametickets.setWinner', $game->id) }}" method="POST">
-                    @csrf
-                    <label>Select Winning Numbers</label>
-                    <div class="row">
-                        <div class="col-md-3 mb-2">  
-                            <input type="number" name="winning_numbers[]" class="form-control" placeholder="Number 1" required>
-                        </div>
-                        <div class="col-md-3 mb-2">
-                            <input type="number" name="winning_numbers[]" class="form-control" placeholder="Number 2">
-                        </div>
-                        <div class="col-md-3 mb-2">
-                            <input type="number" name="winning_numbers[]" class="form-control" placeholder="Number 3">
-                        </div>
-                        <div class="col-md-3 mb-2">
-                            <button class="btn btn--success w-100">Announce Winner</button>
-                        </div>
+{{-- Winner Form --}}
+@if (!$game->winner)
+    <div class="card mb-4">
+        <div class="card-body">
+            <form action="{{ route('admin.gametickets.setWinner', $game->id) }}" method="POST">
+                @csrf
+                <label>Select Winning Number</label>
+                <div class="row">
+                    <div class="col-md-6 mb-2">
+                        <select name="winning_numbers[]" class="form-control" required>
+                            <option value="">Select Number</option>
+                            @for ($i = $game->range_start; $i <= $game->range_end; $i++)
+                                <option value="{{ str_pad($i, 2, '0', STR_PAD_LEFT) }}">
+                                    {{ str_pad($i, 2, '0', STR_PAD_LEFT) }}
+                                </option>   
+                            @endfor
+                        </select>
                     </div>
-                </form>
-            </div>
+                    <div class="col-md-6 mb-2">
+                        <button class="btn btn--success w-100">Announce Winner</button>
+                    </div>
+                </div>
+            </form>
         </div>
-    @else
-        <div class="alert alert-success">
-            @php
-                $winning = is_array($game->winning_numbers)
-                    ? $game->winning_numbers
-                    : json_decode($game->winning_numbers, true);
-            @endphp
-            <strong>Winning Numbers: {{ implode(', ', $winning) }}</strong>
-        </div>
-    @endif
+    </div>
+@else
+    <div class="alert alert-success">
+        <strong>Winning Number: {{ $game->winner->winning_numbers }}</strong>
+    </div>
+@endif
+
 
 {{-- Time and Day Filter Form --}}
 <div class="card mb-4">

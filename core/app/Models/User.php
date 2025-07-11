@@ -106,6 +106,12 @@ class User extends Authenticatable
         return $this->belongsTo(UserRanking::class);
     }
 
+    public function winners()
+    {
+    return $this->hasMany(Winner::class);
+    }
+
+
     public function fullname(): Attribute
     {
         return new Attribute(

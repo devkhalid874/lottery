@@ -68,6 +68,15 @@ class LoginController extends Controller
     ]);
             }
 
+             // ✅ Check if user is a winner and flash session
+    $isWinner = \App\Models\Winner::where('user_id', auth()->id())->latest()->first();
+
+   
+
+    if ($isWinner) {
+        session()->flash('winner_alert', '🎉 Congratulations! You are one of the winners!');
+    }
+
 
             return $this->sendLoginResponse($request);
         }

@@ -28,4 +28,9 @@ class Game extends Model
 {
     return $this->hasMany(Ticket::class);
 }
+
+public function winner()
+{
+    return $this->hasOne(Winner::class);
+}
 }

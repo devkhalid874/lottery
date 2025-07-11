@@ -6,10 +6,12 @@ use Carbon\Carbon;
 use App\Models\Game;
 use App\Models\Page;
 use App\Models\Plan;
+use App\Models\Winner;
 use App\Models\Frontend;
 use App\Models\Language;
 use App\Constants\Status;
 use App\Models\Subscriber;
+use App\Models\Leaderboard;
 use App\Models\Announcement;
 use Illuminate\Http\Request;
 use App\Models\SupportTicket;
@@ -35,8 +37,18 @@ class SiteController extends Controller
 
 
         // Get latest active announcement
-     $announcements = Announcement::where('is_active', true)->latest()->get();
+        $announcements = Announcement::where('is_active', true)->latest()->get();
 
+        $leaderboardGroups = Winner::with(['user', 'game'])
+            ->latest()
+            ->get()
+            ->groupBy('game_id'); // 🧠 group by game
+
+           // Authenticated user winner check
+        $isWinner = null;
+        if (auth()->check()) {
+        $isWinner = Winner::where('user_id', auth()->id())->latest()->first();
+        }
 
 
         // ✅ Fetch active games
@@ -45,7 +57,7 @@ class SiteController extends Controller
         } else {
             $games = Game::where('status', 1)->where('featured', 1)->latest()->get();
         }
-        return view('Template::home', compact('pageTitle', 'sections', 'seoContents', 'seoImage', 'games', 'announcements'));
+        return view('Template::home', compact('pageTitle', 'sections', 'seoContents', 'seoImage', 'games', 'announcements', 'leaderboardGroups','isWinner'));
     }
 
     public function pages($slug)

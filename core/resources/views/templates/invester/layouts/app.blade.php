@@ -13,6 +13,11 @@
 
 <script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
 
+<!-- Slick Carousel CSS -->
+<link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/slick-carousel@1.8.1/slick/slick.css"/>
+<link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/slick-carousel@1.8.1/slick/slick-theme.css"/>
+
+
     <link href="{{ asset('assets/global/css/bootstrap.min.css') }}" rel="stylesheet">
 
     <link href="{{ asset('assets/global/css/all.min.css') }}" rel="stylesheet">
@@ -78,6 +83,7 @@
     @endif
 
     <script src="{{ asset('assets/global/js/jquery-3.7.1.min.js') }}"></script>
+    <script src="https://cdn.jsdelivr.net/npm/slick-carousel@1.8.1/slick/slick.min.js"></script>
     <script src="{{ asset('assets/global/js/bootstrap.bundle.min.js') }}"></script>
     <script src="{{ asset('assets/global/js/select2.min.js') }}"></script>
 
@@ -150,6 +156,24 @@
         });
         
     </script>
+
+    <script>
+    $(document).ready(function(){
+        $('.winner-slider').each(function(){
+            $(this).slick({
+                slidesToShow: 1,
+                slidesToScroll: 1,
+                arrows: false,
+                dots: true,
+                autoplay: true,
+                autoplaySpeed: 3000,
+                adaptiveHeight: true,
+                 pauseOnHover: false
+            });
+        });
+    });
+</script>
+
 </body>
 
 </html>
