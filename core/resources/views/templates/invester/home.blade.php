@@ -389,15 +389,31 @@
                     console.log(res);
                     if (res.success) {
                         // Show SweetAlert then redirect
-                        Swal.fire({
-                            icon: 'success',
-                            title: 'Ticket Purchased!',
-                            text: res.message,
-                            confirmButtonText: 'View My Tickets',
-                        }).then(() => {
-                            window.location.href =
-                                "{{ route('tickets.history') }}"; // ✅ Your ticket history route
-                        });
+                      Swal.fire({
+    icon: 'success',
+    title: '🎟️ Ticket Receipt',
+    html: `
+        <div style="font-size: 16px; padding: 10px; border: 1px solid #ddd; border-radius: 10px; text-align: center;">
+            <p style="margin: 8px 0;"><strong>Game:</strong> ${res.game_name}</p>
+            <p style="margin: 8px 0;"><strong>Selected Numbers:</strong> 
+                <span style="display: inline-block; background: #0d6efd; color: white; padding: 4px 8px; border-radius: 5px;">
+                    ${res.numbers.join(', ')}
+                </span>
+            </p>
+            <p style="margin: 8px 0;"><strong>Amount Deducted:</strong> 
+                <span style="color: #dc3545;">PKR ${res.amount}</span>
+            </p>
+            <p style="margin: 8px 0;"><strong>Time:</strong> ${res.time}</p>
+        </div>
+    `,
+    confirmButtonText: '📄 View My Tickets',
+    width: 400,
+    padding: '1.2em',
+   
+}).then(() => {
+    window.location.href = "{{ route('tickets.history') }}";
+});
+
 
                         // Clear selected numbers
                         selectedNumbersByGame[gameId] = [];
