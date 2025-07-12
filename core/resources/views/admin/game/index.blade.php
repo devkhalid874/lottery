@@ -257,7 +257,7 @@
                             <div class="col-md-6">
                                 <div class="form-group">
                                     <label>@lang('Open Time')</label>
-                                    <input type="datetime-local" name="open_time" class="form-control" required>
+                                    <input type="time" name="open_time" class="form-control" required>
                                 </div>
                             </div>
 
@@ -265,7 +265,7 @@
                             <div class="col-md-6">
                                 <div class="form-group">
                                     <label>@lang('Close Time')</label>
-                                    <input type="datetime-local" name="close_time" class="form-control" required>
+                                    <input type="time" name="close_time" class="form-control" required>
                                 </div>
                             </div>
 

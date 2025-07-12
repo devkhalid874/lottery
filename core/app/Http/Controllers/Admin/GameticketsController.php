@@ -7,51 +7,52 @@ use App\Models\Game;
 use App\Models\Ticket;
 use App\Models\Winner;
 use App\Models\Leaderboard;
+use App\Models\Transaction;
 use Illuminate\Http\Request;
 use App\Http\Controllers\Controller;
 
 class GameticketsController extends Controller
 {
-  public function gameticket(Request $request, $id)
-{
-    $pageTitle = "Tickets for Game ID: $id";
-    $game = Game::with('winner')->findOrFail($id); // if you need winner data
+    public function gameticket(Request $request, $id)
+    {
+        $pageTitle = "Tickets for Game ID: $id";
+        $game = Game::with('winner')->findOrFail($id); // if you need winner data
 
-    $ticketsQuery = $game->tickets()->with('user');
+        $ticketsQuery = $game->tickets()->with('user');
 
-    $ticketsQuery->where(function ($query) use ($request) {
-        if ($request->day) {
-            $query->whereRaw("DAYNAME(created_at) = ?", [$request->day]);
-        }
+        $ticketsQuery->where(function ($query) use ($request) {
+            if ($request->day) {
+                $query->whereRaw("DAYNAME(created_at) = ?", [$request->day]);
+            }
 
-        if ($request->start_time) {
-            $query->whereTime('created_at', '>=', $request->start_time);
-        }
+            if ($request->start_time) {
+                $query->whereTime('created_at', '>=', $request->start_time);
+            }
 
-        if ($request->end_time) {
-            $query->whereTime('created_at', '<=', $request->end_time);
-        }
-    });
+            if ($request->end_time) {
+                $query->whereTime('created_at', '<=', $request->end_time);
+            }
+        });
 
-    $filteredTickets = $ticketsQuery->get();
+        $filteredTickets = $ticketsQuery->get();
 
-    return view('admin.gameticket.maindash', compact('pageTitle', 'game', 'filteredTickets'));
-}
+        return view('admin.gameticket.maindash', compact('pageTitle', 'game', 'filteredTickets'));
+    }
 
 
     public function gameList(Request $request)
     {
         $pageTitle = "Game List";
         $allGames = Game::all();
-$query = Game::with([
-    'tickets' => function ($q) use ($request) {
-        if ($request->date) {
-            $q->whereDate('created_at', $request->date);
-        }
-    },
-    'tickets.user',
-    'winner' // ✅ Added
-]);
+        $query = Game::with([
+            'tickets' => function ($q) use ($request) {
+                if ($request->date) {
+                    $q->whereDate('created_at', $request->date);
+                }
+            },
+            'tickets.user',
+            'winner' // ✅ Added
+        ]);
 
 
         if ($request->game_id) {
@@ -122,57 +123,79 @@ $query = Game::with([
         return view('admin.gameticket.list', compact('pageTitle', 'numberStats', 'allGames'));
     }
 
-public function setWinner(Request $request, $id)
-{
-    $request->validate([
-        'winning_numbers' => 'required|array|size:1',
-    ]);
+    public function setWinner(Request $request, $id)
+    {
+        $request->validate([
+            'winning_numbers' => 'required|array|size:1',
+        ]);
 
-    $game = Game::with('tickets.user', 'winner')->findOrFail($id);
+        $game = Game::with('tickets.user', 'winner')->findOrFail($id);
 
-    // Prevent duplicate winner entry
-    if ($game->winner) {
-        return back()->withErrors(['error' => 'Winner already set for this game.']);
+        // Prevent duplicate winner entry
+        if ($game->winner()->exists()) {
+            return back()->withErrors(['error' => 'Winner already set for this game.']);
+        }
+
+        $winningNumber = str_pad($request->winning_numbers[0], 2, '0', STR_PAD_LEFT);
+
+        foreach ($game->tickets as $ticket) {
+            $ticketNumbers = json_decode($ticket->number, true);
+
+            if (is_string($ticketNumbers)) {
+                $ticketNumbers = json_decode($ticketNumbers, true);
+            }
+
+            if (!is_array($ticketNumbers)) {
+                $ticketNumbers = [$ticketNumbers];
+            }
+
+            // Clean and format ticket numbers
+            $ticketNumbers = array_map(function ($num) {
+                $num = preg_replace('/\D/', '', $num);
+                return str_pad($num, 2, '0', STR_PAD_LEFT);
+            }, $ticketNumbers);
+
+            $matched = in_array($winningNumber, $ticketNumbers);
+
+            $ticket->is_winner = $matched ? 1 : 0;
+            $ticket->save();
+
+            if ($matched) {
+                // 1. Add to winners table
+                Winner::create([
+                    'game_id'         => $game->id,
+                    'ticket_id'       => $ticket->id,
+                    'user_id'         => $ticket->user_id,
+                    'winning_numbers' => $winningNumber,
+                    'winning_prize'   => $game->winning_amount,
+                ]);
+
+                // 2. Credit user's wallet
+                $user = $ticket->user;
+                $user->balance += $game->winning_amount;
+                $user->save();
+
+                // 3. Record transaction
+                Transaction::create([
+                    'user_id'      => $user->id,
+                    'amount'       => $game->winning_amount,
+                    'post_balance' => $user->balance,
+                    'trx_type'     => '+',
+                    'trx'          => getTrx(),
+                    'details'      => 'Lottery Winning Prize',
+                    'remark'       => 'lottery_winning',
+                ]);
+                // ✅ 4. Send winner email
+                notify($user, 'WINNING_MAIL', [
+                    'fullname' => $user->fullname,
+                    'prize'    => $game->winning_amount,
+                    'company'  => gs('site_name'),
+                    'message'  => 'You have won the lottery with number ' . $winningNumber . '!',
+                ]);
+            }
+        }
+
+        $notify[] = ['success', 'Winner saved, tickets updated & prize credited successfully!'];
+        return back()->withNotify($notify);
     }
-
-    $winningNumber = str_pad($request->winning_numbers[0], 2, '0', STR_PAD_LEFT);
-
-    $winnerCreated = false;
-
-    foreach ($game->tickets as $ticket) {
-        $ticketNumbers = json_decode($ticket->number, true);
-
-        if (is_string($ticketNumbers)) {
-            $ticketNumbers = json_decode($ticketNumbers, true);
-        }
-
-        if (!is_array($ticketNumbers)) {
-            $ticketNumbers = [$ticketNumbers];
-        }
-
-        $ticketNumbers = array_map(function ($num) {
-            $num = preg_replace('/\D/', '', $num);
-            return str_pad($num, 2, '0', STR_PAD_LEFT);
-        }, $ticketNumbers);
-
-        $matched = in_array($winningNumber, $ticketNumbers);
-
-        $ticket->is_winner = $matched ? 1 : 0;
-        $ticket->save();
-
-        if ($matched) {
-            Winner::create([
-                'game_id'        => $game->id,
-                'ticket_id'      => $ticket->id,
-                'user_id'        => $ticket->user_id,
-                'winning_numbers' => $winningNumber,
-                'winning_prize'  => $game->winning_amount,
-            ]);
-        }
-    }
-
-    $notify[] = ['success', 'Winner saved and tickets marked successfully!'];
-    return back()->withNotify($notify);
-}
-
 }

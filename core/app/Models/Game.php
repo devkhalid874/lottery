@@ -31,6 +31,6 @@ class Game extends Model
 
 public function winner()
 {
-    return $this->hasOne(Winner::class);
+    return $this->hasMany(Winner::class,'game_id');
 }
 }

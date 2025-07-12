@@ -6,6 +6,23 @@
 
     <div class="dashboard-inner">
 
+@if(session('winner'))
+    <div class="col-12">
+        <div class="card border-success shadow-sm mb-4">
+            <div class="card-body d-flex align-items-center">
+                <div class="me-3">
+                    <i class="fas fa-trophy fa-3x text-warning"></i>
+                </div>
+                <div>
+                    <h5 class="card-title text-success mb-1">@lang('Congratulations! 🎉')</h5>
+                    <p class="mb-0">{{ session('winner') }}</p>
+                </div>
+                {{-- <button type="button" class="btn-close ms-auto" data-bs-dismiss="alert" aria-label="Close"></button> --}}
+            </div>
+        </div>
+    </div>
+@endif
+
         <div class="notice"></div>
 
         @if ($user->kv == Status::KYC_UNVERIFIED && $user->kyc_rejection_reason)
@@ -85,15 +102,7 @@
             </div>
         @endif
 
-        @if (!$user->ts)
-            <div class="alert border border--warning" role="alert">
-                <div class="alert__icon d-flex align-items-center text--warning"><i class="fas fa-user-lock"></i></div>
-                <p class="alert__message">
-                    <span class="fw-bold">@lang('2FA Authentication')</span><br>
-                    <small><i>@lang('To keep safe your account, Please enable') <a href="{{ route('user.twofactor') }}" class="link-color">@lang('2FA')</a> @lang('security').</i> @lang('It will make secure your account and balance.')</small>
-                </p>
-            </div>
-        @endif
+ 
 
         @if ($isHoliday)
             <div class="alert border border--info" role="alert">
@@ -105,10 +114,37 @@
             </div>
         @endif
 
-  <div class="row g-3 mt-4">
-    {{-- Successful Deposits --}}
+ <div class="row g-3 mt-4">
+
+    {{-- ✅ Wallet Balance --}}
+    <div class="col-lg-4 d-flex">
+        <div class="dashboard-widget w-100 h-100">
+            <div class="d-flex justify-content-between">
+                <h5 class="text-secondary">@lang('Wallet Balance')</h5>
+            </div>
+            <h3 class="text--secondary my-4">
+                {{ showAmount(auth()->user()->balance) }} {{ $general->cur_text }}
+            </h3>
+            <div class="widget-lists">
+                <div class="row">
+                    <div class="col-12">
+                        <p class="fw-bold">@lang('Total Available')</p>
+                        <span>{{ showAmount(auth()->user()->balance) }} {{ $general->cur_text }}</span>
+                    </div>
+                </div>
+                <hr>
+                <p>
+                    <small>
+                        <i>@lang('This is the amount you can use to buy tickets or withdraw.')</i>
+                    </small>
+                </p>
+            </div>
+        </div>
+    </div>
+
+    {{-- ✅ Successful Deposits --}}
     <div class="col-lg-4">
-        <div class="dashboard-widget">
+        <div class="dashboard-widget  w-100 h-100">
             <div class="d-flex justify-content-between">
                 <h5 class="text-secondary">@lang('Successful Deposits')</h5>
             </div>
@@ -131,17 +167,19 @@
                 <hr>
                 <p>
                     <small>
-                        <i>@lang('You\'ve requested to deposit') {{ showAmount($requestedDeposits) }}.
-                        @lang('Where') {{ showAmount($initiatedDeposits) }} @lang('is just initiated but not submitted.')</i>
+                        <i>
+                            @lang('You\'ve requested to deposit') {{ showAmount($requestedDeposits) }}.
+                            @lang('Where') {{ showAmount($initiatedDeposits) }} @lang('is just initiated but not submitted.')
+                        </i>
                     </small>
                 </p>
             </div>
         </div>
     </div>
 
-    {{-- Successful Withdrawals --}}
+    {{-- ✅ Successful Withdrawals --}}
     <div class="col-lg-4">
-        <div class="dashboard-widget">
+        <div class="dashboard-widget w-100 h-100">
             <div class="d-flex justify-content-between">
                 <h5 class="text-secondary">@lang('Successful Withdrawals')</h5>
             </div>
@@ -164,50 +202,17 @@
                 <hr>
                 <p>
                     <small>
-                        <i>@lang('You\'ve requested to withdraw') {{ showAmount($requestedWithdrawals) }}.
-                        @lang('Where') {{ showAmount($initiatedWithdrawals) }} @lang('is just initiated but not submitted.')</i>
+                        <i>
+                            @lang('You\'ve requested to withdraw') {{ showAmount($requestedWithdrawals) }}.
+                            @lang('Where') {{ showAmount($initiatedWithdrawals) }} @lang('is just initiated but not submitted.')
+                        </i>
                     </small>
                 </p>
             </div>
         </div>
     </div>
 
-    {{-- ✅ New: Wallet Balance --}}
-    <div class="col-lg-4">
-        <div class="dashboard-widget">
-            <div class="d-flex justify-content-between">
-                <h5 class="text-secondary">@lang('Wallet Balance')</h5>
-            </div>
-            <h3 class="text--secondary my-4">{{ showAmount(auth()->user()->balance) }} {{ $general->cur_text }}</h3>
-            <div class="widget-lists">
-                <div class="row">
-                    <div class="col-12">
-                        <p class="fw-bold">@lang('Total Available')</p>
-                        <span>{{ showAmount(auth()->user()->balance) }} {{ $general->cur_text }}</span>
-                    </div>
-                </div>
-                <hr>
-                <p>
-                    <small>
-                        <i>@lang('This is the amount you can use to buy tickets or withdraw.')</i>
-                    </small>
-                </p>
-            </div>
-        </div>
-    </div>
 </div>
-
-
-        {{-- <div class="card mt-4 mb-4">
-            <div class="card-body">
-                <div class="mb-2">
-                    <h5 class="title">@lang('Latest ROI Statistics')</h5>
-                    <p> <small><i>@lang('Here is last 30 days statistics of your ROI (Return on Investment)')</i></small></p>
-                </div>
-                <div id="chart"></div>
-            </div>
-        </div> --}}
-    </div>
 
     @if ($user->kv == Status::KYC_UNVERIFIED && $user->kyc_rejection_reason)
         <div class="modal fade" id="kycRejectionReason">

@@ -8,6 +8,7 @@ use App\Models\Form;
 use App\Models\Game;
 use App\Models\User;
 use App\Models\Invest;
+use App\Models\Winner;
 use App\Models\Deposit;
 use App\Models\Referral;
 use App\Constants\Status;
@@ -74,6 +75,11 @@ class UserController extends Controller
             ->orderBy('created_at', 'asc')
             ->groupBy('date')
             ->get();
+
+        // Check if user is winner today
+        if (Winner::where('user_id', $user->id)->whereDate('created_at', now())->exists()) {
+            session()->flash('winner', '🎉 Congratulations! You are a winner today.');
+        }
 
         return view('Template::user.dashboard', $data);
     }
@@ -188,7 +194,6 @@ class UserController extends Controller
 
         $notify[] = ['success', 'KYC data submitted successfully'];
         return to_route('user.home')->withNotify($notify);
-
     }
 
     public function userData()
@@ -445,5 +450,4 @@ class UserController extends Controller
         }
         return response(['message' => $message]);
     }
-
 }
