@@ -10,6 +10,7 @@ use App\Models\Leaderboard;
 use App\Models\Transaction;
 use Illuminate\Http\Request;
 use App\Http\Controllers\Controller;
+use Illuminate\Pagination\LengthAwarePaginator;
 
 class GameticketsController extends Controller
 {
@@ -120,7 +121,19 @@ class GameticketsController extends Controller
             $numberStats = array_merge($numberStats, array_values($numbersCount));
         }
 
-        return view('admin.gameticket.list', compact('pageTitle', 'numberStats', 'allGames'));
+        // ✅ Paginate $numberStats manually
+        $currentPage = LengthAwarePaginator::resolveCurrentPage();
+        $perPage = 10;
+        $collection = collect($numberStats);
+        $paginatedStats = new LengthAwarePaginator(
+            $collection->slice(($currentPage - 1) * $perPage, $perPage)->values(),
+            $collection->count(),
+            $perPage,
+            $currentPage,
+            ['path' => $request->url(), 'query' => $request->query()]
+        );
+
+        return view('admin.gameticket.list', compact('pageTitle', 'paginatedStats', 'allGames'));
     }
 
     public function setWinner(Request $request, $id)
@@ -132,9 +145,10 @@ class GameticketsController extends Controller
         $game = Game::with('tickets.user', 'winner')->findOrFail($id);
 
         // Prevent duplicate winner entry
-        if ($game->winner()->exists()) {
-            return back()->withErrors(['error' => 'Winner already set for this game.']);
-        }
+      $todayWinner = $game->winner()->whereDate('created_at', now()->toDateString())->first();
+    if ($todayWinner) {
+        return back()->withErrors(['error' => 'Today\'s winner is already set for this game.']);
+    }
 
         $winningNumber = str_pad($request->winning_numbers[0], 2, '0', STR_PAD_LEFT);
 

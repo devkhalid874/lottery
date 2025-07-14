@@ -5,7 +5,11 @@
     <h3>{{ $game->name }}</h3>
 
 {{-- Winner Form --}}
-@if ($game->winner->isEmpty())
+@php
+    $todayWinner = $game->winner->where('created_at', '>=', now()->startOfDay())->first();
+@endphp
+
+@if (!$todayWinner)
     <div class="card mb-4">
         <div class="card-body">
             <form action="{{ route('admin.gametickets.setWinner', $game->id) }}" method="POST">
@@ -18,7 +22,7 @@
                             @for ($i = $game->range_start; $i <= $game->range_end; $i++)
                                 <option value="{{ str_pad($i, 2, '0', STR_PAD_LEFT) }}">
                                     {{ str_pad($i, 2, '0', STR_PAD_LEFT) }}
-                                </option>   
+                                </option>
                             @endfor
                         </select>
                     </div>
@@ -31,9 +35,10 @@
     </div>
 @else
     <div class="alert alert-success">
-        <strong>Winning Number: {{ $game->winner->first()->winning_numbers }}</strong>
+        <strong>Today's Winning Number: {{ $todayWinner->winning_numbers }}</strong>
     </div>
 @endif
+
 
 
 

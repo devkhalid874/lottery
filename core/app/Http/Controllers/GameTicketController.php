@@ -79,14 +79,20 @@ class GameTicketController extends Controller
 
 
 
-    public function history()
+    public function history(Request $request)
     {
         $user = auth()->user();
 
-        $tickets = Ticket::with('game')
-            ->where('user_id', $user->id)
-            ->latest()
-            ->paginate(10);
+      $tickets = Ticket::with('game')
+        ->where('user_id', $user->id)
+        ->when($request->search, function ($query) use ($request) {
+            $query->whereHas('game', function ($q) use ($request) {
+                $q->where('name', 'like', '%' . $request->search . '%');
+            });
+        })
+        ->latest()
+        ->paginate(10);
+
         $pageTitle = "Ticket History";
         return view('Template::user.gametickets', compact('tickets', 'pageTitle'));
     }

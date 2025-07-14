@@ -150,7 +150,7 @@
                         <div class="p-4 rounded-4 shadow h-100 d-flex flex-column justify-content-between"
                             style="background: linear-gradient(to bottom right, #058ec8, #012b54);">
                             <h4 class="text-white fw-semibold mb-4 border-bottom pb-2">
-                                🏆 Winners of <span class="text-warning">{{ $game->name ?? 'Game #' . $gameId }}</span>
+                                 Winners of <span class="text-warning">{{ $game->name ?? 'Game #' . $gameId }}</span>
                             </h4>
 
                             {{-- Winner List --}}
@@ -161,12 +161,12 @@
                                             {{ $winner->user->firstname ?? 'Guest' }}
                                         </h5>
                                         <p class="mb-1 small text-light">
-                                            🎉 Prize: <strong class="text-warning">
+                                            Prize: <strong class="text-warning">
                                                 PKR {{ number_format($winner->winning_prize ?? 0) }}
                                             </strong>
                                         </p>
                                         <p class="mb-0 small text-light">
-                                            🎟️ Ticket ID: <span class="text-white-50">
+                                             Ticket ID: <span class="text-white-50">
                                                 #{{ getTicketId($winner->ticket_id) }}
                                             </span>
                                         </p>
@@ -395,11 +395,15 @@
     html: `
         <div style="font-size: 16px; padding: 10px; border: 1px solid #ddd; border-radius: 10px; text-align: center;">
             <p style="margin: 8px 0;"><strong>Game:</strong> ${res.game_name}</p>
-            <p style="margin: 8px 0;"><strong>Selected Numbers:</strong> 
-                <span style="display: inline-block; background: #0d6efd; color: white; padding: 4px 8px; border-radius: 5px;">
-                    ${res.numbers.join(', ')}
-                </span>
-            </p>
+           <p style="margin: 8px 0;">
+    <strong>Selected Numbers:</strong><br>
+    ${res.numbers.map(num => `
+        <span style="display: inline-block; background-color: #f0f4f8; color: #333; padding: 4px 10px; border-radius: 20px; margin: 2px; font-size: 14px;">
+            ${num}
+        </span>
+    `).join('')}
+</p>
+
             <p style="margin: 8px 0;"><strong>Amount Deducted:</strong> 
                 <span style="color: #dc3545;">PKR ${res.amount}</span>
             </p>
@@ -498,7 +502,7 @@
         </script>
 @endif
 
-@if (session('winner_alert'))
+{{-- @if (session('winner_alert'))
     <script>
         document.addEventListener('DOMContentLoaded', function () {
             Swal.fire({
@@ -509,7 +513,7 @@
             });
         });
     </script>
-@endif
+@endif --}}
 
 
 
