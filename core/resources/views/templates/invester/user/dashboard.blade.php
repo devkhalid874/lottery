@@ -17,7 +17,7 @@
                     <h5 class="card-title text-success mb-1">@lang('Congratulations! 🎉')</h5>
                     <p class="mb-0">
                         You are the winner of 
-                        <strong>Game #{{ $latestWin->game_id }}</strong>
+                        <strong>Game - {{ $latestWin->game_id }}</strong>
                         with number 
                         <strong>{{ $latestWin->winning_numbers }}</strong>
                         and won 
@@ -129,7 +129,7 @@
                 <h5 class="text-secondary">@lang('Wallet Balance')</h5>
             </div>
             <h3 class="text--secondary my-4">
-                {{ showAmount(auth()->user()->balance) }} {{ $general->cur_text }}
+                {{ showAmount(auth()->user()->balance) }}
             </h3>
             <div class="widget-lists">
                 <div class="row">
