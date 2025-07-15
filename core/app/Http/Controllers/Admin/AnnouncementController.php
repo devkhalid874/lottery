@@ -61,9 +61,6 @@ class AnnouncementController extends Controller
     }
 
 
-
-
-
     /**
      * Display the specified resource.
      */

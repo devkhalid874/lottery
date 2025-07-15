@@ -53,7 +53,7 @@
         <div class="container">
             <a class="navbar-brand fw-bold fs-3" href="{{ route('home') }}">
                 <img src="{{ siteLogo() }}" alt="logo" height="60">
-            </a> 
+            </a>
 
             <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#mainNavbar">
                 <span class="navbar-toggler-icon"></span>
@@ -68,7 +68,7 @@
                         </a>
                     </li>
 
-                    @php
+                    {{-- @php
                         $pages = App\Models\Page::where('tempname', $activeTemplate)->where('is_default', 0)->get();
                     @endphp
                     @foreach ($pages as $data)
@@ -76,6 +76,18 @@
                             <a class="nav-link fs-6 {{ request()->routeIs('pages') && request()->route('slug') == $data->slug ? 'active fw-semibold text-primary' : '' }}"
                                 href="{{ route('pages', [$data->slug]) }}">
                                 {{ __($data->name) }}
+                            </a>
+                        </li>
+                    @endforeach --}}
+
+                    @php
+                        $policyPages = getContent('policy_pages.element', false, null, true);
+                    @endphp
+                    @foreach ($policyPages as $policy)
+                        <li class="nav-item">
+                            <a class="nav-link fs-6 "
+                                href="{{ route('policy.pages', $policy->slug) }}">
+                                {{ __($policy->data_values->title) }}
                             </a>
                         </li>
                     @endforeach
@@ -130,7 +142,7 @@
                     <li><a href="{{ route('user.register') }}" class="link-color-footer">@lang('Sign Up')</a></li>
                 </ul>
                 <p class="copy-right-text">&copy; {{ date('Y') }} <a href="{{ route('home') }}"
-                    class="text--base-name">{{ __(gs('site_name')) }}</a>. @lang('All Rights Reserved')</p>
+                        class="text--base-name">{{ __(gs('site_name')) }}</a>. @lang('All Rights Reserved')</p>
             </div>
         </div>
     </footer>

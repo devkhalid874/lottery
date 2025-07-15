@@ -6,7 +6,7 @@
 
     <div class="dashboard-inner">
 
-@if(session('winner'))
+@if($latestWin)
     <div class="col-12">
         <div class="card border-success shadow-sm mb-4">
             <div class="card-body d-flex align-items-center">
@@ -15,9 +15,15 @@
                 </div>
                 <div>
                     <h5 class="card-title text-success mb-1">@lang('Congratulations! 🎉')</h5>
-                    <p class="mb-0">{{ session('winner') }}</p>
+                    <p class="mb-0">
+                        You are the winner of 
+                        <strong>Game #{{ $latestWin->game_id }}</strong>
+                        with number 
+                        <strong>{{ $latestWin->winning_numbers }}</strong>
+                        and won 
+                        <strong>{{ getAmount($latestWin->winning_prize) }}</strong>.
+                    </p>
                 </div>
-                {{-- <button type="button" class="btn-close ms-auto" data-bs-dismiss="alert" aria-label="Close"></button> --}}
             </div>
         </div>
     </div>

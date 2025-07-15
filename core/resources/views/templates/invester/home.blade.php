@@ -138,53 +138,51 @@
         </div>
     </div>
 
-    {{-- ✅ LEADERBOARD SECTION (CARD STYLE) --}}
-    <section class="py-5 bg-white border-top">
-        <div class="container">
-            <div class="row g-4">
+  {{-- ✅ LEADERBOARD SECTION (Styled like Investment Cards, keeps slider) --}}
+<section class="py-5" >
+    <div class="container">
+        <div class="row g-4">
 
-                @foreach ($leaderboardGroups as $gameId => $winners)
-                    @php $game = $winners->first()->game; @endphp
+            @foreach ($leaderboardGroups as $gameId => $winners)
+                @php $game = $winners->first()->game; @endphp
 
-                    <div class="col-md-6">
-                        <div class="p-4 rounded-4 shadow h-100 d-flex flex-column justify-content-between"
-                            style="background: linear-gradient(to bottom right, #058ec8, #012b54);">
-                            <h4 class="text-white fw-semibold mb-4 border-bottom pb-2">
-                                 Winners of <span class="text-warning">{{ $game->name ?? 'Game #' . $gameId }}</span>
-                            </h4>
+                <div class="col-md-6 col-lg-4">
+                    <div class="bg-white p-4 rounded-4 shadow h-100 d-flex flex-column justify-content-between text-center">
+                        <h4 class="text-dark fw-bold mb-2">
+                            Winners of <span class="text-primary">{{ $game->name ?? 'Game #' . $gameId }}</span>
+                        </h4>
+                        <p class="text-muted small mb-4 border-bottom pb-2">Leaderboard Highlights</p>
 
-                            {{-- Winner List --}}
-                            <div class="winner-slider text-white">
-                                @foreach ($winners as $winner)
-                                    <div class="mb-4 pb-3 border-bottom border-white">
-                                        <h5 class="fw-semibold text-light mb-1">
-                                            {{ $winner->user->firstname ?? 'Guest' }}
-                                        </h5>
-                                        <p class="mb-1 small text-light">
-                                            Prize: <strong class="text-warning">
-                                                PKR {{ number_format($winner->winning_prize ?? 0) }}
-                                            </strong>
-                                        </p>
-                                        <p class="mb-0 small text-light">
-                                             Ticket ID: <span class="text-white-50">
-                                                #{{ getTicketId($winner->ticket_id) }}
-                                            </span>
-                                        </p>
-                                    </div>
-                                @endforeach
-                            </div>
-
-                            {{-- Optional Button --}}
-                            {{-- <a href="#" class="btn btn-outline-light fw-bold w-100 mt-auto">
-                            View All
-                        </a> --}}
+                        {{-- Winner Slider --}}
+                        <div class="winner-slider text-dark">
+                            @foreach ($winners as $winner)
+                                <div class="mb-4 pb-3 border-bottom">
+                                    <h5 class="fw-semibold mb-1">
+                                        {{ $winner->user->firstname ?? 'Guest' }}
+                                    </h5>
+                                    <p class="mb-1 small">
+                                        Prize: <strong class="text-success">PKR {{ number_format($winner->winning_prize ?? 0) }}</strong>
+                                    </p>
+                                    <p class="mb-0 small text-muted">
+                                        Ticket ID: <span class="text-dark">#{{ getTicketId($winner->ticket_id) }}</span>
+                                    </p>
+                                    <p class="mb-0 small text-muted">
+                                     Date: <span class="text-dark">{{ \Carbon\Carbon::parse($winner->created_at)->format('d M, Y') }}</span>
+                                    </p>
+                                </div>
+                            @endforeach
                         </div>
-                    </div>
-                @endforeach
 
-            </div>
+                        {{-- Optional Button --}}
+                        {{-- <a href="#" class="btn btn-outline-primary fw-bold w-100 mt-auto">View All</a> --}}
+                    </div>
+                </div>
+            @endforeach
+
         </div>
-    </section>
+    </div>
+</section>
+
 
 
 
@@ -389,19 +387,19 @@
                     console.log(res);
                     if (res.success) {
                         // Show SweetAlert then redirect
-                      Swal.fire({
-    icon: 'success',
-    title: '🎟️ Ticket Receipt',
-    html: `
+                        Swal.fire({
+                            icon: 'success',
+                            title: '🎟️ Ticket Receipt',
+                            html: `
         <div style="font-size: 16px; padding: 10px; border: 1px solid #ddd; border-radius: 10px; text-align: center;">
             <p style="margin: 8px 0;"><strong>Game:</strong> ${res.game_name}</p>
            <p style="margin: 8px 0;">
     <strong>Selected Numbers:</strong><br>
     ${res.numbers.map(num => `
-        <span style="display: inline-block; background-color: #f0f4f8; color: #333; padding: 4px 10px; border-radius: 20px; margin: 2px; font-size: 14px;">
-            ${num}
-        </span>
-    `).join('')}
+            <span style="display: inline-block; background-color: #f0f4f8; color: #333; padding: 4px 10px; border-radius: 20px; margin: 2px; font-size: 14px;">
+                ${num}
+            </span>
+        `).join('')}
 </p>
 
             <p style="margin: 8px 0;"><strong>Amount Deducted:</strong> 
@@ -410,13 +408,13 @@
             <p style="margin: 8px 0;"><strong>Time:</strong> ${res.time}</p>
         </div>
     `,
-    confirmButtonText: '📄 View My Tickets',
-    width: 400,
-    padding: '1.2em',
-   
-}).then(() => {
-    window.location.href = "{{ route('tickets.history') }}";
-});
+                            confirmButtonText: '📄 View My Tickets',
+                            width: 400,
+                            padding: '1.2em',
+
+                        }).then(() => {
+                            window.location.href = "{{ route('tickets.history') }}";
+                        });
 
 
                         // Clear selected numbers
@@ -500,9 +498,9 @@
                 localStorage.removeItem('redirectGameId');
             });
         </script>
-@endif
+    @endif
 
-{{-- @if (session('winner_alert'))
+    {{-- @if (session('winner_alert'))
     <script>
         document.addEventListener('DOMContentLoaded', function () {
             Swal.fire({
@@ -517,40 +515,40 @@
 
 
 
-        <style>
-            /* Optional: add visual highlight to selected game after login */
-            .highlight-flash {
-                animation: flashHighlight 2s ease-in-out;
-                border: 2px solid #007bff;
-                border-radius: 12px;
+    <style>
+        /* Optional: add visual highlight to selected game after login */
+        .highlight-flash {
+            animation: flashHighlight 2s ease-in-out;
+            border: 2px solid #007bff;
+            border-radius: 12px;
+        }
+
+        @keyframes flashHighlight {
+            0% {
+                background-color: #e3f2fd;
             }
 
-            @keyframes flashHighlight {
-                0% {
-                    background-color: #e3f2fd;
-                }
-
-                50% {
-                    background-color: #bbdefb;
-                }
-
-                100% {
-                    background-color: #e3f2fd;
-                }
+            50% {
+                background-color: #bbdefb;
             }
 
-            .winner-slider h5 {
-                font-size: 1.1rem;
+            100% {
+                background-color: #e3f2fd;
             }
+        }
 
-            .winner-slider p {
-                font-size: 0.9rem;
-            }
+        .winner-slider h5 {
+            font-size: 1.1rem;
+        }
 
-            .winner-slider .border-bottom {
-                margin-bottom: 1rem;
-            }
-        </style>
+        .winner-slider p {
+            font-size: 0.9rem;
+        }
+
+        .winner-slider .border-bottom {
+            margin-bottom: 1rem;
+        }
+    </style>
 
 
     {{-- other HTML and scripts above this --}}

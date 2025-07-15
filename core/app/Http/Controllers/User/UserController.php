@@ -77,9 +77,11 @@ class UserController extends Controller
             ->get();
 
         // Check if user is winner today
-        if (Winner::where('user_id', $user->id)->whereDate('created_at', now())->exists()) {
-            session()->flash('winner', "🎉 Congratulations! You are a winner of today's game.");
-        }
+      $data['latestWin'] = Winner::where('user_id', $user->id)
+    ->with('game') // optional
+    ->latest()
+    ->first();
+
 
         return view('Template::user.dashboard', $data);
     }

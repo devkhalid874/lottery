@@ -5584,6 +5584,7 @@ th.w-85 {
   margin-left: 250px;
   border-bottom: 1px solid #dee4ec;
   transition: all 0.5s cubic-bezier(0.4, -0.25, 0.25, 1.1);
+  margin-top: -24px;
 }
 
 @media (max-width: 991px) {
